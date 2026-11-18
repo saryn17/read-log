@@ -1,0 +1,14 @@
+[
+  { "id": "cloud", "label": "クラウド", "hint": "AWS / Azure / GCP / Cloudflare などのサービスの使い方、設計、料金" },
+  { "id": "infra", "label": "インフラ・運用", "hint": "Kubernetes、IaC、CI/CD、監視、SRE、ネットワーク、コンテナ" },
+  { "id": "database", "label": "データベース", "hint": "RDB / NoSQL / 分散DB、SQL、チューニング、データ基盤" },
+  { "id": "backend", "label": "バックエンド", "hint": "API 設計、サーバーサイド実装、認証、メッセージング" },
+  { "id": "frontend", "label": "フロントエンド", "hint": "ブラウザ、UI、CSS、フレームワーク、アクセシビリティ" },
+  { "id": "language", "label": "言語・ランタイム", "hint": "言語仕様、コンパイラ、ランタイム、標準ライブラリ、性能" },
+  { "id": "ai", "label": "AI・LLM", "hint": "LLM、エージェント、プロンプト、機械学習" },
+  { "id": "security", "label": "セキュリティ", "hint": "脆弱性、認証認可、暗号、サプライチェーン、監査" },
+  { "id": "architecture", "label": "設計・アーキテクチャ", "hint": "設計原則、アーキテクチャパターン、ドメイン設計、技術選定" },
+  { "id": "tooling", "label": "開発ツール", "hint": "Git、エディタ、テスト、開発フロー、OSS の運用" },
+  { "id": "career", "label": "キャリア・組織", "hint": "働き方、チーム、学習法、エンジニアリングマネジメント" },
+  { "id": "other", "label": "その他", "hint": "どれにも当てはまらないもの。増えてきたら新しいカテゴリを検討する" }
+]

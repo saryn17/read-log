@@ -1,0 +1,10 @@
+{
+  "k8s": "kubernetes",
+  "js": "javascript",
+  "ts": "typescript",
+  "golang": "go",
+  "postgres": "postgresql",
+  "gha": "github-actions",
+  "tf": "terraform",
+  "gcp": "google-cloud"
+}
