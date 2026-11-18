@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Read Log</title>
+<meta name="description" content="読んだ技術記事の記録">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23000'/%3E%3Crect x='8' y='8' width='16' height='5' fill='%23d1ffca'/%3E%3Crect x='8' y='15' width='16' height='3' fill='%23fff'/%3E%3Crect x='8' y='20' width='10' height='3' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400..600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="wrap bar">
+  <span class="mono brand">READ LOG</span>
+  <nav class="pill" aria-label="sections">
+    <button type="button" data-scroll="search">検索</button>
+    <button type="button" data-scroll="facets">分類</button>
+    <button type="button" data-scroll="results">記事</button>
+  </nav>
+  <span class="mono bar-count" id="bar-count"></span>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div class="hero-l">
+      <h1 class="display">Read<br>Log</h1>
+      <p class="mono" id="updated"></p>
+    </div>
+    <div class="stats on-dark" id="stats" aria-label="統計"></div>
+  </section>
+
+  <section class="wrap" id="search" aria-label="検索">
+    <div class="panel">
+      <div class="sbox" id="sbox">
+        <span class="mono lbl">SEARCH</span>
+        <div class="chips" id="chips"></div>
+        <input id="q" type="text" inputmode="search" autocomplete="off" autocapitalize="off" spellcheck="false"
+               role="combobox" aria-label="検索" aria-autocomplete="list" aria-controls="sugg" aria-expanded="false" placeholder="検索">
+        <kbd class="key" aria-hidden="true">/</kbd>
+        <button type="button" class="x" id="clear" data-clear-all hidden aria-label="条件をすべて解除">×</button>
+        <ul id="sugg" class="sugg on-dark" role="listbox" hidden></ul>
+      </div>
+      <dl class="facets" id="facets">
+        <div class="frow"><dt class="mono">CATEGORY</dt><dd id="f-cat"></dd></div>
+        <div class="frow"><dt class="mono">TAG</dt><dd id="f-tag"></dd></div>
+        <div class="frow"><dt class="mono">SITE</dt><dd id="f-site"></dd></div>
+      </dl>
+    </div>
+
+    <div class="controls" id="controls">
+      <div class="seg" role="group" aria-label="並び順">
+        <span class="mono">SORT</span>
+        <button type="button" data-seg="sort" data-value="relevance">関連度</button>
+        <button type="button" data-seg="sort" data-value="read-desc">新しい順</button>
+        <button type="button" data-seg="sort" data-value="read-asc">古い順</button>
+        <button type="button" data-seg="sort" data-value="pub-desc">公開日</button>
+        <button type="button" data-seg="sort" data-value="title">タイトル</button>
+        <button type="button" data-seg="sort" data-value="site">サイト</button>
+      </div>
+      <div class="seg" role="group" aria-label="グループ">
+        <span class="mono">GROUP</span>
+        <button type="button" data-seg="group" data-value="none">なし</button>
+        <button type="button" data-seg="group" data-value="category">カテゴリ</button>
+        <button type="button" data-seg="group" data-value="month">月</button>
+        <button type="button" data-seg="group" data-value="year">年</button>
+        <button type="button" data-seg="group" data-value="site">サイト</button>
+      </div>
+      <div class="seg" role="group" aria-label="表示">
+        <span class="mono">VIEW</span>
+        <button type="button" data-seg="view" data-value="card">カード</button>
+        <button type="button" data-seg="view" data-value="list">リスト</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap results" id="results" aria-label="記事">
+    <div id="rhead" class="rhead" aria-live="polite"></div>
+    <div id="list"></div>
+    <div id="more" class="more"></div>
+  </section>
+</main>
+
+<footer class="foot on-dark">
+  <div class="wrap foot-in">
+    <span class="mono">READ LOG</span>
+    <button type="button" class="mono" data-scroll="top">TOP ↑</button>
+  </div>
+</footer>
+
+<noscript><p class="wrap">JavaScript が必要です。</p></noscript>
+<script src="lib.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
