@@ -91,6 +91,40 @@ class EntryTests(unittest.TestCase):
         e, errs = self.good(tags=[f"t{i}" for i in range(9)])
         self.assertIsNone(e)
 
+    def test_kind_is_guessed_from_the_domain_and_can_be_overridden(self):
+        cases = {
+            "https://speakerdeck.com/a/b": "slide",
+            "https://www.youtube.com/watch?v=1": "video",
+            "https://arxiv.org/abs/2401.00001": "paper",
+            "https://zenn.dev/a/b": "article",
+            "https://notspeakerdeck.com/a": "article",  # a longer domain that merely ends the same way
+        }
+        for url, kind in cases.items():
+            e, errs = self.good(url=url)
+            self.assertEqual(errs, [], url)
+            self.assertEqual(e["kind"], kind, url)
+        e, _ = self.good(url="https://speakerdeck.com/a/b", kind="article")
+        self.assertEqual(e["kind"], "article")
+        e, errs = self.good(kind="podcast")
+        self.assertIsNone(e)
+        self.assertTrue(any("kind" in m for m in errs))
+
+    def test_points_are_trimmed_and_limited(self):
+        e, errs = self.good(points=["  一つ目\n です ", "", "二つ目"])
+        self.assertEqual(errs, [])
+        self.assertEqual(e["points"], ["一つ目 です", "二つ目"])
+        self.assertEqual(self.good()[0]["points"], [])
+        for bad in (["a", "b", "c", "d"], ["あ" * 81], "not a list"):
+            e, errs = self.good(points=bad)
+            self.assertIsNone(e, bad)
+            self.assertTrue(errs)
+
+    def test_archived_must_be_a_date(self):
+        self.assertEqual(self.good(archived="2026-11-20")[0]["archived"], "2026-11-20")
+        self.assertIsNone(self.good()[0]["archived"])
+        e, errs = self.good(archived="yesterday")
+        self.assertIsNone(e)
+
 
 class ParseTests(unittest.TestCase):
     def test_extract(self):
@@ -104,6 +138,11 @@ class ParseTests(unittest.TestCase):
         self.assertTrue(m["excerpt"].startswith("見出し"))
         self.assertNotIn("menu", m["excerpt"])
         self.assertNotIn("foot", m["excerpt"])
+
+    def test_excerpt_length_follows_chars(self):
+        full = readlog.extract_meta(SAMPLE_HTML, "https://zenn.dev/a")["excerpt"]
+        self.assertGreater(len(full), 250)  # the sample body is about 300 chars, under the 1200 default
+        self.assertEqual(len(readlog.extract_meta(SAMPLE_HTML, "https://zenn.dev/a", 250)["excerpt"]), 250)
 
 
 class StoreTests(unittest.TestCase):
@@ -181,6 +220,98 @@ class StoreTests(unittest.TestCase):
         self.assertEqual(self.stored(), [])
         code, _ = run(["remove", "https://a.com/none"])
         self.assertEqual(code, 1)
+
+    def test_update_keeps_points_and_archived_when_input_omits_them(self):
+        self.add("https://a.com/1", "2025-01-01", points=["要点"])
+        run(["edit"], json.dumps({"url": "https://a.com/1", "archived": "2026-01-02"}))
+        raw = {"url": "https://a.com/1", "title": "new", "category": "cloud", "tags": ["x"], "summary": "s"}
+        run(["add", "--update"], json.dumps(raw))
+        self.assertEqual(self.stored()[0]["points"], ["要点"])
+        self.assertEqual(self.stored()[0]["archived"], "2026-01-02")
+        run(["add", "--update"], json.dumps(dict(raw, points=[])))
+        self.assertEqual(self.stored()[0]["points"], [])  # an explicit empty list replaces them
+
+    def test_edit_merges_fields_by_id_or_url(self):
+        self.add("https://a.com/1", "2025-01-01")
+        self.add("https://a.com/2", "2025-02-01")
+        first = self.stored()[1]
+        code, out = run(["edit"], json.dumps([
+            {"id": first["id"], "tags": ["Rust", "#wasm"], "points": ["a"]},
+            {"url": "https://www.a.com/2/?utm_source=x", "kind": "slide"},
+        ]))
+        self.assertEqual(code, 0, out)
+        by_url = {a["url"]: a for a in self.stored()}
+        self.assertEqual(by_url["https://a.com/1"]["tags"], ["rust", "wasm"])
+        self.assertEqual(by_url["https://a.com/1"]["title"], "t https://a.com/1")  # untouched fields stay
+        self.assertEqual(by_url["https://a.com/2"]["kind"], "slide")
+        self.assertEqual(by_url["https://a.com/2"]["read"], "2025-02-01")
+        self.assertEqual(run(["validate"])[0], 0)
+
+    def test_edit_with_one_bad_patch_writes_nothing(self):
+        self.add("https://a.com/1", "2025-01-01")
+        before = (self.tmp / "articles.json").read_bytes()
+        code, out = run(["edit"], json.dumps([
+            {"url": "https://a.com/1", "tags": ["ok"]},
+            {"url": "https://a.com/1", "category": "nope"},
+            {"url": "https://a.com/missing", "tags": ["x"]},
+        ]))
+        self.assertEqual(code, 1)
+        self.assertEqual(len(json.loads(out)["errors"]), 2)
+        self.assertEqual((self.tmp / "articles.json").read_bytes(), before)
+
+    def test_normalize_migrates_the_old_shape(self):
+        old = {"id": "00000000", "url": "https://speakerdeck.com/a/b", "title": "t", "site": "speakerdeck.com", "author": None,
+               "published": None, "read": "2025-01-01", "category": "cloud", "tags": ["x"], "summary": "s", "lang": "ja"}
+        old["id"] = readlog.article_id(old["url"])
+        (self.tmp / "articles.json").write_text(json.dumps([old]), encoding="utf-8")
+        self.assertEqual(run(["validate"])[0], 1)
+        code, out = run(["normalize"])
+        self.assertEqual(code, 0)
+        self.assertTrue(json.loads(out)["rewritten"])
+        a = self.stored()[0]
+        self.assertEqual(list(a), readlog.FIELD_ORDER)
+        self.assertEqual((a["kind"], a["points"], a["archived"]), ("slide", [], None))
+        self.assertEqual(run(["validate"])[0], 0)
+        self.assertFalse(json.loads(run(["normalize"])[1])["rewritten"])  # second run changes nothing
+
+    def test_archive_records_only_the_successes(self):
+        self.add("https://a.com/1", "2025-01-01")
+        self.add("https://a.com/2", "2025-02-01")
+        answers = {"https://a.com/1": (True, "HTTP 200"), "https://a.com/2": (False, "HTTP 429")}
+        with mock.patch.object(readlog, "request_archive", side_effect=lambda u, t: answers[u]) as req:
+            code, out = run(["archive", "--delay", "0"])
+        self.assertEqual(code, 0)
+        res = json.loads(out)
+        self.assertEqual(res["archived"], ["https://a.com/1"])
+        self.assertEqual(res["failed"], [{"url": "https://a.com/2", "reason": "HTTP 429"}])
+        by_url = {a["url"]: a for a in self.stored()}
+        self.assertEqual(by_url["https://a.com/1"]["archived"], readlog.today())
+        self.assertIsNone(by_url["https://a.com/2"]["archived"])
+        # the next default run asks only for the one that is still missing
+        with mock.patch.object(readlog, "request_archive", return_value=(True, "HTTP 200")) as req:
+            run(["archive", "--delay", "0"])
+        self.assertEqual([c.args[0] for c in req.call_args_list], ["https://a.com/2"])
+
+    def test_archive_unknown_target_is_an_error(self):
+        self.add("https://a.com/1", "2025-01-01")
+        with mock.patch.object(readlog, "request_archive") as req:
+            code, _ = run(["archive", "https://a.com/nope"])
+        self.assertEqual(code, 1)
+        req.assert_not_called()
+
+    def test_check_links_fails_only_on_404_and_410(self):
+        for n in range(1, 6):
+            self.add(f"https://a.com/{n}", f"2025-01-0{n}")
+        status = {"https://a.com/1": 200, "https://a.com/2": 404, "https://a.com/3": 403,
+                  "https://a.com/4": "TimeoutError", "https://a.com/5": 410}
+        with mock.patch.object(readlog, "probe", side_effect=lambda u, t: status[u]):
+            code, out = run(["check-links"])
+        res = json.loads(out)
+        self.assertEqual(code, 1)
+        self.assertEqual(sorted(d["url"] for d in res["dead"]), ["https://a.com/2", "https://a.com/5"])
+        self.assertEqual(sorted(w["url"] for w in res["warn"]), ["https://a.com/3", "https://a.com/4"])
+        with mock.patch.object(readlog, "probe", return_value=200):
+            self.assertEqual(run(["check-links"])[0], 0)
 
     def test_file_is_utf8_lf(self):
         self.add("https://a.com/1", "2025-01-01", title="日本語タイトル")

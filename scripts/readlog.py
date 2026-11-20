@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 """read-log CLI. Standard library only.
 
-  fetch URL            Fetch a page and print its metadata and a text excerpt as JSON
-  add [--file F]       Add articles (JSON object or array from stdin or F)
-  tags [--json]        List categories and tags in use, with counts
-  categories           List the category ids with their hints
-  remove URL_OR_ID     Remove an article
-  validate             Check site/data/articles.json (used by CI)
+  fetch URL [--chars N]  Fetch a page and print its metadata and a text excerpt as JSON
+  add [--file F]         Add articles (JSON object or array from stdin or F)
+  edit                   Change fields of stored articles (JSON patch(es) with id or url, from stdin)
+  tags [--json]          List categories and tags in use, with counts
+  categories             List the category ids with their hints
+  remove URL_OR_ID       Remove an article
+  archive [URL_OR_ID..]  Ask the Wayback Machine to save articles (default: those not saved yet)
+  check-links            Report articles whose URL answers 404/410 (used by the monthly workflow)
+  normalize              Rewrite articles.json in canonical form (after the schema changes)
+  validate               Check site/data/articles.json (used by CI)
 
 The site reads site/data/articles.json directly, so every write keeps that file
 sorted, normalized and free of duplicates.
@@ -20,6 +24,7 @@ import os
 import re
 import sys
 import tempfile
+import time
 import unicodedata
 import urllib.error
 import urllib.parse
@@ -30,11 +35,23 @@ from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "site" / "data"
 
-FIELD_ORDER = ["id", "url", "title", "site", "author", "published", "read", "category", "tags", "summary", "lang"]
+FIELD_ORDER = ["id", "url", "title", "site", "author", "published", "read", "category", "kind", "tags",
+               "summary", "points", "lang", "archived"]
+KINDS = ["article", "slide", "video", "paper", "book"]
+# Format guessed from the domain when `kind` is not given. Anything else is an article.
+# "book" (books and PDF handbooks) is never guessed: give it explicitly.
+KIND_HOSTS = {
+    "slide": ("speakerdeck.com", "docswell.com", "slideshare.net"),
+    "video": ("youtube.com", "youtu.be", "nicovideo.jp", "vimeo.com"),
+    "paper": ("arxiv.org",),
+}
 MAX_TAGS = 8
 MAX_TITLE = 200
 MAX_SUMMARY = 160
 MAX_TAG_LEN = 30
+MAX_POINTS = 3
+MAX_POINT = 80
+ARCHIVE_SAVE = "https://web.archive.org/save/"
 TRACKING_PARAMS = {"fbclid", "gclid", "yclid", "igshid", "mc_cid", "mc_eid", "_hsenc", "_hsmi", "ref_src", "ref_url"}
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -151,6 +168,14 @@ def guess_lang(text: str) -> str:
     return "ja" if re.search(r"[぀-ヿ一-鿿]", text) else "en"
 
 
+def guess_kind(url: str) -> str:
+    host = site_of(url)
+    for kind, hosts in KIND_HOSTS.items():
+        if any(host == h or host.endswith("." + h) for h in hosts):
+            return kind
+    return "article"
+
+
 # ---------------------------------------------------------------- entries
 
 def build_entry(raw: dict, categories: list[dict], aliases: dict[str, str]) -> tuple[dict | None, list[str]]:
@@ -185,10 +210,29 @@ def build_entry(raw: dict, categories: list[dict], aliases: dict[str, str]) -> t
     elif len(summary) > MAX_SUMMARY:
         errors.append(f"summary is longer than {MAX_SUMMARY} chars")
 
-    published = read = None
+    kind = str(raw.get("kind") or "").strip().lower() or guess_kind(url)
+    if kind not in KINDS:
+        errors.append(f"kind {kind!r} is not one of {KINDS}")
+
+    points_raw = raw.get("points")
+    if points_raw is None:
+        points_raw = []
+    if not isinstance(points_raw, list):
+        errors.append("points must be a list of strings")
+        points_raw = []
+    points = [re.sub(r"\s+", " ", str(p)).strip() for p in points_raw]
+    points = [p for p in points if p]
+    if len(points) > MAX_POINTS:
+        errors.append(f"points has more than {MAX_POINTS} entries")
+    for p in points:
+        if len(p) > MAX_POINT:
+            errors.append(f"point {p[:20]!r}... is longer than {MAX_POINT} chars")
+
+    published = read = archived = None
     try:
         published = parse_date(raw.get("published"), "published")
         read = parse_date(raw.get("read"), "read") or today()
+        archived = parse_date(raw.get("archived"), "archived")
     except ValueError as e:
         errors.append(str(e))
     limit = (date.fromisoformat(today()) + timedelta(days=1)).isoformat()
@@ -208,9 +252,12 @@ def build_entry(raw: dict, categories: list[dict], aliases: dict[str, str]) -> t
         "published": published,
         "read": read,
         "category": category,
+        "kind": kind,
         "tags": tags,
         "summary": summary,
+        "points": points,
         "lang": str(raw.get("lang") or "").strip().lower() or guess_lang(title),
+        "archived": archived,
     }
     return {k: entry[k] for k in FIELD_ORDER}, []
 
@@ -237,6 +284,8 @@ def check_stored(items: list[dict], categories: list[dict], aliases: dict[str, s
             problems.append(f"{where}: url is not normalized (expected {entry['url']})")
         if a["tags"] != entry["tags"]:
             problems.append(f"{where}: tags are not normalized (expected {entry['tags']})")
+        if a.get("points") != entry["points"]:
+            problems.append(f"{where}: points are not normalized (expected {entry['points']})")
         key = dedupe_key(a["url"])
         if key in seen:
             problems.append(f"{where}: duplicates {seen[key]}")
@@ -335,7 +384,7 @@ class PageParser(HTMLParser):
         if self._article:
             self._buf["article"].append(text)
 
-    def excerpt(self, limit: int = 1200) -> str:
+    def excerpt(self, limit: int = 1200) -> str:  # limit is set by fetch --chars
         for name in ("article", "main", "body"):
             text = re.sub(r"\s+", " ", " ".join(self._buf[name])).strip()
             if len(text) >= 200 or name == "body":
@@ -373,7 +422,7 @@ def _iso_day(value) -> str | None:
         return None
 
 
-def extract_meta(html: str, url: str) -> dict:
+def extract_meta(html: str, url: str, excerpt_chars: int = 1200) -> dict:
     p = PageParser()
     p.feed(html)
     m = p.meta
@@ -408,7 +457,7 @@ def extract_meta(html: str, url: str) -> dict:
         "published": published,
         "description": re.sub(r"\s+", " ", desc).strip(),
         "lang": (p.lang or m.get("og:locale") or "").split("-")[0].split("_")[0].lower() or None,
-        "excerpt": p.excerpt(),
+        "excerpt": p.excerpt(excerpt_chars),
     }
 
 
@@ -421,7 +470,7 @@ def decode_body(raw: bytes, content_type: str) -> str:
         return raw.decode("utf-8", errors="replace")
 
 
-def fetch_page(url: str, timeout: int = 20, max_bytes: int = 3_000_000) -> dict:
+def fetch_page(url: str, timeout: int = 20, max_bytes: int = 3_000_000, excerpt_chars: int = 1200) -> dict:
     url = normalize_url(url)
     req = urllib.request.Request(url, headers={
         "User-Agent": USER_AGENT,
@@ -440,7 +489,7 @@ def fetch_page(url: str, timeout: int = 20, max_bytes: int = 3_000_000) -> dict:
         return {"url": url, "error": f"{type(e).__name__}: {e}"}
     if "html" not in ctype.lower():
         return {"url": final, "error": f"not an HTML page ({ctype or 'unknown type'})", "status": status}
-    info = extract_meta(decode_body(raw, ctype), normalize_url(final))
+    info = extract_meta(decode_body(raw, ctype), normalize_url(final), excerpt_chars)
     info["status"] = status
     if not info["title"] or len(info["excerpt"]) < 200:
         info["note"] = "thin page (likely client-rendered or blocked): read the article with a web fetch tool instead"
@@ -455,7 +504,7 @@ def read_input(path: str | None):
 
 
 def cmd_fetch(args) -> int:
-    info = fetch_page(args.url)
+    info = fetch_page(args.url, excerpt_chars=max(200, min(args.chars, 20000)))
     print(json.dumps(info, ensure_ascii=False, indent=2))
     return 1 if "error" in info else 0
 
@@ -468,24 +517,29 @@ def cmd_add(args) -> int:
     by_key = {dedupe_key(a["url"]): i for i, a in enumerate(items)}
 
     added, updated, duplicates, errors = [], [], [], []
-    staged: list[tuple[dict, bool]] = []
+    staged: list[tuple[dict, dict]] = []
     for r in raws:
         entry, errs = build_entry(r, categories, aliases)
         if errs:
             errors.append({"url": r.get("url"), "errors": errs})
         else:
-            staged.append((entry, "read" in r and bool(r["read"])))
+            staged.append((entry, r))
     if errors:
         print(json.dumps({"added": [], "updated": [], "duplicates": [], "errors": errors}, ensure_ascii=False, indent=2))
         return 1
 
-    for entry, read_given in staged:
+    for entry, r in staged:
         key = dedupe_key(entry["url"])
         if key in by_key:
             old = items[by_key[key]]
             if args.update:
-                if not read_given:
+                # Fields the input leaves out keep their stored value.
+                if not r.get("read"):
                     entry["read"] = old["read"]
+                if "points" not in r:
+                    entry["points"] = old.get("points", [])
+                if not r.get("archived"):
+                    entry["archived"] = old.get("archived")
                 items[by_key[key]] = entry
                 updated.append(entry)
             else:
@@ -548,6 +602,140 @@ def cmd_remove(args) -> int:
     return 0
 
 
+def find_article(items: list[dict], target: str) -> int | None:
+    target = target.strip()
+    for i, a in enumerate(items):
+        if a["id"] == target:
+            return i
+    try:
+        key = dedupe_key(target)
+    except ValueError:
+        return None
+    for i, a in enumerate(items):
+        if dedupe_key(a["url"]) == key:
+            return i
+    return None
+
+
+def cmd_edit(args) -> int:
+    """Merge each patch (an object with id or url, plus the fields to change) into the stored article."""
+    raw = read_input(args.file)
+    patches = raw if isinstance(raw, list) else [raw]
+    categories, aliases = load_categories(), load_aliases()
+    items = load_articles()
+    updated, errors = [], []
+    for patch in patches:
+        target = patch.get("id") or patch.get("url") or ""
+        i = find_article(items, target)
+        if i is None:
+            errors.append({"target": target, "errors": ["no article matches"]})
+            continue
+        merged = dict(items[i])
+        merged.update({k: v for k, v in patch.items() if k not in ("id", "url")})
+        entry, errs = build_entry(merged, categories, aliases)
+        if errs:
+            errors.append({"target": target, "errors": errs})
+        else:
+            items[i] = entry
+            updated.append(entry)
+    if errors:
+        print(json.dumps({"updated": [], "errors": errors}, ensure_ascii=False, indent=2))
+        return 1
+    write_json(articles_path(), sort_articles(items))
+    print(json.dumps({"updated": [{"id": e["id"], "title": e["title"]} for e in updated], "errors": []},
+                     ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_normalize(_args) -> int:
+    categories, aliases = load_categories(), load_aliases()
+    items = load_articles()
+    out, errors = [], []
+    for a in items:
+        entry, errs = build_entry(a, categories, aliases)
+        if errs:
+            errors.append({"url": a.get("url"), "errors": errs})
+        else:
+            out.append(entry)
+    if errors:
+        print(json.dumps({"errors": errors}, ensure_ascii=False, indent=2))
+        return 1
+    out = sort_articles(out)
+    changed = out != items or any(list(a.keys()) != FIELD_ORDER for a in items)
+    if changed:
+        write_json(articles_path(), out)
+    print(json.dumps({"rewritten": changed, "total": len(out)}, ensure_ascii=False))
+    return 0
+
+
+def request_archive(url: str, timeout: int = 120) -> tuple[bool, str]:
+    """Ask the Wayback Machine (Save Page Now) to capture the URL."""
+    req = urllib.request.Request(ARCHIVE_SAVE + url, headers={"User-Agent": USER_AGENT})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return 200 <= resp.status < 300, f"HTTP {resp.status}"
+    except urllib.error.HTTPError as e:
+        return False, f"HTTP {e.code}"
+    except (urllib.error.URLError, TimeoutError, OSError) as e:
+        return False, type(e).__name__
+
+
+def cmd_archive(args) -> int:
+    items = load_articles()
+    if args.targets:
+        idx = []
+        for t in args.targets:
+            i = find_article(items, t)
+            if i is None:
+                print(json.dumps({"error": f"no article matches {t!r}"}, ensure_ascii=False))
+                return 1
+            idx.append(i)
+    else:
+        idx = [i for i, a in enumerate(items) if not a.get("archived")]
+    archived, failed = [], []
+    for n, i in enumerate(idx):
+        if n:
+            time.sleep(args.delay)
+        ok, reason = request_archive(items[i]["url"], args.timeout)
+        if ok:
+            items[i]["archived"] = today()
+            archived.append(items[i]["url"])
+        else:
+            failed.append({"url": items[i]["url"], "reason": reason})
+    if archived:
+        write_json(articles_path(), items)
+    print(json.dumps({"archived": archived, "failed": failed}, ensure_ascii=False, indent=2))
+    return 0
+
+
+DEAD_STATUSES = {404, 410}
+
+
+def probe(url: str, timeout: int) -> str | int:
+    """HTTP status of the URL, or the error name when no answer came."""
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "text/html,*/*"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return resp.status
+    except urllib.error.HTTPError as e:
+        return e.code
+    except (urllib.error.URLError, TimeoutError, OSError) as e:
+        return type(e).__name__
+
+
+def cmd_check_links(args) -> int:
+    from concurrent.futures import ThreadPoolExecutor
+    items = load_articles()
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        results = list(pool.map(lambda a: probe(a["url"], args.timeout), items))
+    dead = [{"url": a["url"], "status": r} for a, r in zip(items, results) if r in DEAD_STATUSES]
+    # 403, 429, 5xx and timeouts are often bot blocking, so they are listed but do not fail the run.
+    warn = [{"url": a["url"], "status": r} for a, r in zip(items, results)
+            if r not in DEAD_STATUSES and not (isinstance(r, int) and 200 <= r < 400)]
+    print(json.dumps({"checked": len(items), "dead": dead, "warn": warn}, ensure_ascii=False, indent=2))
+    return 1 if dead else 0
+
+
 def cmd_validate(_args) -> int:
     try:
         items = load_articles()
@@ -571,8 +759,13 @@ def main(argv=None) -> int:
             stream.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
-    s = sub.add_parser("fetch"); s.add_argument("url"); s.set_defaults(fn=cmd_fetch)
+    s = sub.add_parser("fetch"); s.add_argument("url"); s.add_argument("--chars", type=int, default=1200); s.set_defaults(fn=cmd_fetch)
     s = sub.add_parser("add"); s.add_argument("--file"); s.add_argument("--update", action="store_true"); s.set_defaults(fn=cmd_add)
+    s = sub.add_parser("edit"); s.add_argument("--file"); s.set_defaults(fn=cmd_edit)
+    s = sub.add_parser("archive"); s.add_argument("targets", nargs="*")
+    s.add_argument("--delay", type=float, default=5.0); s.add_argument("--timeout", type=int, default=120); s.set_defaults(fn=cmd_archive)
+    s = sub.add_parser("check-links"); s.add_argument("--timeout", type=int, default=20); s.set_defaults(fn=cmd_check_links)
+    s = sub.add_parser("normalize"); s.set_defaults(fn=cmd_normalize)
     s = sub.add_parser("tags"); s.add_argument("--json", action="store_true"); s.set_defaults(fn=cmd_tags)
     s = sub.add_parser("categories"); s.set_defaults(fn=cmd_categories)
     s = sub.add_parser("remove"); s.add_argument("target"); s.set_defaults(fn=cmd_remove)
