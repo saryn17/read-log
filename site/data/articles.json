@@ -1,1 +1,131 @@
-[]
+[
+  {
+    "id": "1524f384",
+    "url": "https://zenn.dev/koduki/articles/d3e8984f420b370681f9",
+    "title": "データベースを遅くするための８つの方法",
+    "site": "zenn.dev",
+    "author": null,
+    "published": "2020-11-15",
+    "read": "2026-11-20",
+    "category": "database",
+    "tags": [
+      "rdb",
+      "oracle",
+      "逐次コミット",
+      "インデックス",
+      "パフォーマンス"
+    ],
+    "summary": "逐次コミットや INDEX の付け方など、RDB を遅くする典型的なアンチパターン8つを Oracle ベースで解説する。",
+    "lang": "ja"
+  },
+  {
+    "id": "bcb5d1fc",
+    "url": "https://qiita.com/yasuoyasuo/items/c43783316a4d141a140f",
+    "title": "Google社のテクニカルライティングの基礎教育資料がとても良かったので紹介したい",
+    "site": "qiita.com",
+    "author": null,
+    "published": "2020-05-24",
+    "read": "2026-11-20",
+    "category": "other",
+    "tags": [
+      "テクニカルライティング",
+      "google",
+      "文章術",
+      "ドキュメント"
+    ],
+    "summary": "Google が公開するテクニカルライティング教材 Technical Writing One と Two の構成と基本原則を、日本語で紹介する。",
+    "lang": "ja"
+  },
+  {
+    "id": "b65bf641",
+    "url": "https://qiita.com/tsutorm/items/c9ab1e1c64474c341d77",
+    "title": "「ざっくり工数どのくらい？」に「ざっくり工数このくらい」で答えてはいけない",
+    "site": "qiita.com",
+    "author": null,
+    "published": "2026-11-13",
+    "read": "2026-11-20",
+    "category": "career",
+    "tags": [
+      "見積もり",
+      "工数",
+      "プロジェクト管理",
+      "三点見積もり"
+    ],
+    "summary": "概算見積もりを、数量×単位あたりの工数の式で出し、単位工数は過去実績から求め、三点見積もりで幅と確率を添えて伝える方法。",
+    "lang": "ja"
+  },
+  {
+    "id": "364d1d8e",
+    "url": "https://qiita.com/human_hub_T/items/439bda5ea9234b7d9013",
+    "title": "【初投稿】「最近どう？」を卒業しよう！180cm95kg・青髪・ヒゲ面のインフラ中間管理職が1on1で意識している11の工夫",
+    "site": "qiita.com",
+    "author": null,
+    "published": "2026-11-17",
+    "read": "2026-11-20",
+    "category": "career",
+    "tags": [
+      "1on1",
+      "マネジメント",
+      "コーチング",
+      "コミュニケーション"
+    ],
+    "summary": "インフラ中間管理職が 1on1 で実践している11の工夫を、事前ヒアリング、座る位置、沈黙の待ち方、相手を主語にした質問などを挙げて紹介する。",
+    "lang": "ja"
+  },
+  {
+    "id": "5ee8bba1",
+    "url": "https://qiita.com/yoshimi0227/items/3cac86915d47a2b788cd",
+    "title": "Kubernetes の コンテナランタイムについて、改めて見つめなおしてみた",
+    "site": "qiita.com",
+    "author": null,
+    "published": "2020-12-05",
+    "read": "2026-11-20",
+    "category": "infra",
+    "tags": [
+      "kubernetes",
+      "コンテナランタイム",
+      "containerd",
+      "cri-o",
+      "docker"
+    ],
+    "summary": "Kubernetes v1.20 での Docker 非推奨を題材に、高レベルランタイムと低レベルランタイムの役割分担と CRI / OCI の関係を整理する。",
+    "lang": "ja"
+  },
+  {
+    "id": "dbb4de24",
+    "url": "https://qiita.com/carol0226/items/bdb16dbd5c16a2c43ad5",
+    "title": "Microsoft セキュリティ、これをやってください！～ 実践ベストプラクティス",
+    "site": "qiita.com",
+    "author": null,
+    "published": "2026-10-10",
+    "read": "2026-11-20",
+    "category": "security",
+    "tags": [
+      "microsoft-entra-id",
+      "microsoft-365",
+      "パスキー",
+      "条件付きアクセス",
+      "ゼロトラスト"
+    ],
+    "summary": "パスキー、条件付きアクセス、ブレイクグラス、PIM、Defender など、Microsoft 環境で優先して取り組むセキュリティ対策を順に紹介する。",
+    "lang": "ja"
+  },
+  {
+    "id": "c426f261",
+    "url": "https://qiita.com/mryo0826/items/c05efd7ac228fe85ab44",
+    "title": "Muse の VM は約2時間で入れ替わる（実測と対策）",
+    "site": "qiita.com",
+    "author": null,
+    "published": "2026-11-19",
+    "read": "2026-11-20",
+    "category": "ai",
+    "tags": [
+      "muse",
+      "aiエージェント",
+      "vm",
+      "実測"
+    ],
+    "summary": "パーソナルAIエージェント Muse の VM が約2時間ごとに入れ替わる頻度を実測し、状態をファイルに置く前提で作業を設計し直す方法。",
+    "lang": "ja"
+  }
+]
