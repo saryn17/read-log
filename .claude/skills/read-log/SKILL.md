@@ -84,7 +84,9 @@ git -C "REPO" commit -m "add: <title>"
 
 ### 6. 公開
 
-公開（push）はユーザーが頼んだときだけ行う。コミットのあとに、上がるのは `site/data/articles.json` への N 件の追加だけだと伝えて、push してよいか聞く。承認されたら `git -C "REPO" push` を実行する。`git -C "REPO" remote` が空なら、まだ公開前なので push の話はしない。
+コミットのあと、確認を取らずに `git -C "REPO" push` を実行する。このリポジトリでは push のたびに聞かないと、ユーザーが決めている。push の前に `git -C "REPO" status --short` が空で、上がるのが追加したコミットだけであることを確かめる。`git -C "REPO" remote` が空なら、push は行わない。
+
+push が拒否されたら、原因を返信に1行で書く。強制 push はしない。
 
 ## そのほかの依頼
 
