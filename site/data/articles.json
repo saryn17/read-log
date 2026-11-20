@@ -1,5 +1,190 @@
 [
   {
+    "id": "170e8054",
+    "url": "https://bogus.jp/webapp_security_sample_100pages.pdf",
+    "title": "Webアプリケーションセキュリティ入門",
+    "site": "bogus.jp",
+    "author": "yousukezan",
+    "published": null,
+    "read": "2026-11-20",
+    "category": "security",
+    "kind": "book",
+    "tags": [
+      "脆弱性",
+      "flask"
+    ],
+    "summary": "作る、壊す、直す、確かめるの流れで、Flask 製の題材アプリ MiniSNS を使って Web アプリケーションのセキュリティを学ぶ入門書のサンプル PDF。",
+    "points": [
+      "題材のサンプルアプリ MiniSNS を作り、Burp Suite Community Edition などで診断しながら学ぶ",
+      "目次には、認証（Argon2id、MFA、Passkey）、セッション、認可、SQL インジェクション、XSS が並ぶ",
+      "SQL インジェクションの章に、MiniSNS の安全版の実装を読む節がある"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "934f5dd3",
+    "url": "https://speakerdeck.com/77web/sorehahownanyo-nogaidorain-number-orestudy",
+    "title": "「それはhowなんよ〜」のガイドライン #orestudy",
+    "site": "speakerdeck.com",
+    "author": "Hiromi Hishida",
+    "published": "2025-04-07",
+    "read": "2026-11-20",
+    "category": "career",
+    "kind": "slide",
+    "tags": [
+      "コミュニケーション",
+      "why-what-how"
+    ],
+    "summary": "「それはhowなんよ」の how とは何かを、why、what、how の違いと、山に登る例で解説するスライド。",
+    "points": [
+      "how は「やり方・手段」。why（なぜ）、what（何を）、how（どうやって）を区別して考える",
+      "例では、why が宝がほしい、what が山に登る、how が登山道、裏道、ヘリコプター、ドローンなど",
+      "how だけでなく、why や what から見直す場合もある。宝くじが当たれば山頂の宝は要らないかもしれない"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "f9e00b92",
+    "url": "https://qiita.com/kentawata/items/f1596bda2d07cdb2637d",
+    "title": "「あいつには関わりたくない」と思われていた2年間の話をする",
+    "site": "qiita.com",
+    "author": null,
+    "published": "2026-04-03",
+    "read": "2026-11-20",
+    "category": "career",
+    "kind": "article",
+    "tags": [
+      "コミュニケーション",
+      "新人教育"
+    ],
+    "summary": "新人のころ周囲に敬遠されていた筆者が、聞かれたことに答えない、枕詞で保険をかけるなど、信用を削ったやり取りを5つ挙げる。",
+    "points": [
+      "上司が新人のやり取りで見ているのは、仕事を渡したら自分の手間が増えるか減るか",
+      "聞かれたことに答えず経緯や理由を先に並べるのは、事実を言うのを避ける行動だと振り返っている",
+      "「的外れだったら申し訳ないんですが」などの枕詞は、発言を聞き流される原因になる"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "88f8e9b3",
+    "url": "https://azukiazusa.dev/blog/void-vite-cloudflare-deploy",
+    "title": "Void でフルスタックアプリを構築して Cloudflare にデプロイする",
+    "site": "azukiazusa.dev",
+    "author": null,
+    "published": "2026-10-17",
+    "read": "2026-11-20",
+    "category": "cloud",
+    "kind": "article",
+    "tags": [
+      "cloudflare",
+      "void"
+    ],
+    "summary": "VoidZero が公開した Void で、D1 を使うメモアプリを React で作り、void deploy で Cloudflare にデプロイするまでの手順。",
+    "points": [
+      "Void は VoidZero が開発した、Vite でフルスタックアプリを作り Cloudflare にデプロイするツールキット",
+      "void/db などの import から必要なリソースを推論するので、wrangler.jsonc を手で書かずに済む",
+      "void deploy 1つで、D1 データベースの作成、ビルド、マイグレーション、公開までを行う"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "b3dfb634",
+    "url": "https://speakerdeck.com/kinopeee/hanesu-sekkei-nyuumon-kiso-chishiki-no-seiri-kara-jitsumu-heno-suteppu-appu",
+    "title": "ハーネス設計入門 〜 基礎知識の整理から実務へのステップアップ 〜",
+    "site": "speakerdeck.com",
+    "author": "kinopee",
+    "published": "2026-09-24",
+    "read": "2026-11-20",
+    "category": "ai",
+    "kind": "slide",
+    "tags": [
+      "aiエージェント",
+      "ハーネス"
+    ],
+    "summary": "モデルの外側の環境を設計するハーネスエンジニアリングの系譜と5つの流派、その後の収束と実証を整理した、Findy 主催セミナーの資料。",
+    "points": [
+      "ハーネスエンジニアリングは、エージェントが同じ失敗を繰り返さないよう、モデルの外側の環境を設計すること",
+      "定義の違いから、Chase派、Hashimoto派、Fowler派、Chawla派、Codex派の5つの流派に整理している",
+      "2026年3〜7月に語彙が収束し、Agent Plugins 1.0 で標準化も始まったが、互換性は一部にとどまる"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "a2688477",
+    "url": "https://future-architect.github.io/articles/20261027a",
+    "title": "ブラウザでPDF/Office文書などを表示できるビューアを作りながらAI slopについて考えた",
+    "site": "future-architect.github.io",
+    "author": "澁川喜規",
+    "published": "2026-10-26",
+    "read": "2026-11-20",
+    "category": "ai",
+    "kind": "article",
+    "tags": [
+      "ai-slop",
+      "go"
+    ],
+    "summary": "Office や PDF をブラウザで表示するビューアと中間形式 BDF を AI と作った記録と、その過程で考えた AI slop の正体。",
+    "points": [
+      "Office や PDF を、ブラウザの Canvas 命令に近い中間形式 BDF に変換して表示するビューアを AI と作った",
+      "Office 系の変換は、消費電力が約1/15、速度は1〜2桁速く、メモリは少なく見積もって約1/4と計測した",
+      "コアは1〜2日で完成したが、実用に耐える形にするまでに延べ10日以上かかった"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "99c21ddd",
+    "url": "https://speakerdeck.com/stillpedant/thinking-systems",
+    "title": "現代AI入門: 大規模言語モデルから思考するシステムへ — Test-Time Scaling, Loop, Harness, RSI",
+    "site": "speakerdeck.com",
+    "author": "Masafumi Oyamada",
+    "published": "2026-10-27",
+    "read": "2026-11-20",
+    "category": "ai",
+    "kind": "slide",
+    "tags": [
+      "aiエージェント",
+      "ハーネス",
+      "test-time-scaling"
+    ],
+    "summary": "言語モデル単体から、モデルを部品とする「思考するシステム」へ至る流れを、Test-Time Scaling、Loop、Harness、RSI の4トピックで概観する IBIS 2026 の資料。",
+    "points": [
+      "言語モデル単体から、モデルを部品の一つとする「思考するシステム」への歴史を概観する",
+      "取り上げる技術トピックは Test-Time Scaling、Loop、Harness、RSI の4つ",
+      "IBIS 2026 のチュートリアルの発表資料を加筆修正したもの（84枚）"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "86b1df18",
+    "url": "https://zenn.dev/microsoft/articles/explain-before-shorten",
+    "title": "AI の謎な説明文を直すスキル",
+    "site": "zenn.dev",
+    "author": null,
+    "published": "2026-10-26",
+    "read": "2026-11-20",
+    "category": "ai",
+    "kind": "article",
+    "tags": [
+      "aiエージェント",
+      "テクニカルライティング"
+    ],
+    "summary": "AI が書きがちな否定から始まる説明文を、口頭で説明する形にしてから短く整えるスキル explain-before-shorten の紹介と適用例。",
+    "points": [
+      "否定から入る説明文を、まず口頭で伝わる文章にしてから短くするスキル explain-before-shorten を作った",
+      "C# 14 の field キーワードの説明文などを、適用前後で並べて示している",
+      "SKILL.md の指示文は肯定形を基本とし、否定形は必要な制約にだけ使う"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
     "id": "683ac052",
     "url": "https://tech.codmon.com/entry/2026/10/23/173909",
     "title": "PHP2Shellへの対応を振り返って",
@@ -8,14 +193,20 @@
     "published": "2026-10-23",
     "read": "2026-11-20",
     "category": "security",
+    "kind": "article",
     "tags": [
       "php",
       "php2shell",
-      "インシデント対応",
-      "サービス停止"
+      "インシデント対応"
     ],
     "summary": "PHP2Shell への予防措置として日中にサービスを停止してから、修正版を待つ自前ビルドの準備と再開までを、判断と反省点を含めて時系列で振り返る。",
-    "lang": "ja"
+    "points": [
+      "修正版の公開前に脆弱性の情報が広まったため、10月21日の日中にサービスを予防的に停止した",
+      "脆弱性を把握してから職員用管理画面を再開するまでは約18時間。停止したのは6サービス",
+      "修正版が入手できない場合に備え、自社で PHP のビルドパッケージを用意する準備を進めた"
+    ],
+    "lang": "ja",
+    "archived": null
   },
   {
     "id": "5687238e",
@@ -26,14 +217,19 @@
     "published": "2026-10-27",
     "read": "2026-11-20",
     "category": "tooling",
+    "kind": "article",
     "tags": [
-      "プルリクエスト",
       "コードレビュー",
-      "llm",
-      "riskjudge"
+      "llm"
     ],
     "summary": "newmo が運用する PR 自動承認の仕組み riskjudge を、機械ゲート、LLM ゲート、複数回判定、決定式のレイヤ構成として紹介する。",
-    "lang": "ja"
+    "points": [
+      "PR を機械ゲート、LLM ゲート、複数回判定、決定式の順に通し、1つでも引っかかれば人に回す",
+      "重要領域と1,000行超の PR は同じ判定を3回行い、1票でも懸念があれば懸念ありとする",
+      "承認するかどうかは Go の純粋関数が決め、LLM は差分を読んで所見を返す役に限る"
+    ],
+    "lang": "ja",
+    "archived": "2026-11-20"
   },
   {
     "id": "6d456e3c",
@@ -44,14 +240,19 @@
     "published": "2026-10-30",
     "read": "2026-11-20",
     "category": "security",
+    "kind": "article",
     "tags": [
       "個人情報",
-      "idaas",
-      "個人情報保護法",
-      "設計"
+      "idaas"
     ],
     "summary": "認証や決済を外部サービスに任せて自社の DB から個人情報をどこまでなくせるかを、IDaaS の sub や個人情報保護法の線引きを交えて検討する。",
-    "lang": "ja"
+    "points": [
+      "パスワードと MFA、クレジットカード情報は、IDaaS や決済サービスに任せれば自社で持たずに済む",
+      "カード番号が自社サーバーを通る通過型は非保持化の条件を満たせず、リンク型か JavaScript 型を選ぶ",
+      "IDaaS の sub に紐づく利用履歴は、自社にとっては個人情報として扱われる可能性が高い"
+    ],
+    "lang": "ja",
+    "archived": null
   },
   {
     "id": "03b2eda9",
@@ -62,14 +263,19 @@
     "published": "2026-11-14",
     "read": "2026-11-20",
     "category": "ai",
+    "kind": "slide",
     "tags": [
       "aiエージェント",
-      "常時稼働エージェント",
-      "claude",
-      "登壇資料"
+      "claude"
     ],
     "summary": "常時稼働エージェントを5つの部品に分けて解説した Claude 公式ブログ Building always-on agents を、スライドにまとめた資料。",
-    "lang": "ja"
+    "points": [
+      "ループの外側にインボックス、タイマー、メモリ、権限、アウトボックスの5部品を足して作る",
+      "イベントは直接渡さず受け箱に入れ、ワーカーは同時に1つだけ動かす",
+      "確認が要る操作に当たったらセッションを保存して終え、返事が届いたら続きから再開する"
+    ],
+    "lang": "ja",
+    "archived": null
   },
   {
     "id": "a6552c6f",
@@ -80,6 +286,7 @@
     "published": "2026-11-17",
     "read": "2026-11-20",
     "category": "infra",
+    "kind": "article",
     "tags": [
       "kubernetes",
       "docker",
@@ -87,7 +294,13 @@
       "入門"
     ],
     "summary": "公式ドキュメントの構成要素の図に沿って、Kubernetes のクラスターなどの各要素を初学者が1つずつ噛み砕いて整理する。",
-    "lang": "ja"
+    "points": [
+      "コントロールプレーンはクラスター全体の制御を担い、スケジューリングやイベントへの対応を行う",
+      "ノードはコンテナを動かすサーバーで、その中で動く最小単位がポッド",
+      "kube-apiserver はコントロールプレーンの窓口で、etcd はクラスターのデータを持つデータベース"
+    ],
+    "lang": "ja",
+    "archived": null
   },
   {
     "id": "5704239b",
@@ -98,15 +311,21 @@
     "published": "2026-10-22",
     "read": "2026-11-20",
     "category": "infra",
+    "kind": "article",
     "tags": [
       "php",
       "php2shell",
       "kubernetes",
-      "buildkit",
-      "セキュリティアップデート"
+      "buildkit"
     ],
     "summary": "PHP2Shell の修正版リリースからメンテナンス解除までの約30分に行った、コンテナのフルビルドと Kubernetes へのロールアウト、当日のトラブル。",
-    "lang": "ja"
+    "points": [
+      "PHP の公式イメージの更新と、ソースから自前ビルドする経路の2通りのマージリクエストを用意した",
+      "Docker Bake の context 機能で、公式イメージの PHP バージョンだけを差し替えてビルドした",
+      "常駐の BuildKit と NVMe のキャッシュで、数GBのイメージのフルビルドを6分で終えた"
+    ],
+    "lang": "ja",
+    "archived": null
   },
   {
     "id": "f08fdf66",
@@ -117,14 +336,20 @@
     "published": "2025-12-02",
     "read": "2026-11-20",
     "category": "career",
+    "kind": "slide",
     "tags": [
       "コーディングエージェント",
       "キャリア",
-      "ai",
-      "登壇資料"
+      "aiエージェント"
     ],
     "summary": "コーディングエージェント以後の不確実なキャリアについて、35歳以下のエンジニア向けに話した Developers Boost 2025 の講演資料。",
-    "lang": "ja"
+    "points": [
+      "LLM チャットとの違いは、コーディングエージェントが計画と振り返り、ファイル操作やコマンド実行まで行う点",
+      "コーディングの自動運転レベルを0から5で整理し、副操縦士（Copilot）から操縦士（Pilot）への移行を扱う",
+      "ドライバー席での人間による運転を、エンジニアに許された特別な時間と位置づける"
+    ],
+    "lang": "ja",
+    "archived": null
   },
   {
     "id": "1524f384",
@@ -135,15 +360,19 @@
     "published": "2020-11-15",
     "read": "2026-11-20",
     "category": "database",
+    "kind": "article",
     "tags": [
       "rdb",
-      "oracle",
-      "逐次コミット",
-      "インデックス",
-      "パフォーマンス"
+      "oracle"
     ],
     "summary": "逐次コミットや INDEX の付け方など、RDB を遅くする典型的なアンチパターン8つを Oracle ベースで解説する。",
-    "lang": "ja"
+    "points": [
+      "大量の逐次コミットは数倍から十数倍遅くなる。1000〜1万件ごとのコミットが目安",
+      "全カラムに INDEX を付けると、挿入のたびに再構築が走り書き込み性能が落ちる",
+      "シーケンス番号の PK は避け、UUID などのランダムなキーかナチュラルキーを使う"
+    ],
+    "lang": "ja",
+    "archived": null
   },
   {
     "id": "bcb5d1fc",
@@ -154,14 +383,19 @@
     "published": "2020-05-24",
     "read": "2026-11-20",
     "category": "other",
+    "kind": "article",
     "tags": [
       "テクニカルライティング",
-      "google",
-      "文章術",
-      "ドキュメント"
+      "google"
     ],
     "summary": "Google が公開するテクニカルライティング教材 Technical Writing One と Two の構成と基本原則を、日本語で紹介する。",
-    "lang": "ja"
+    "points": [
+      "Technical Writing One は文レベル、Two は文書全体の書き方を扱う2部構成",
+      "One の要点は、能動態を優先、1文1メッセージ、長い文はリスト化、読み手を意識すること",
+      "Two の要点は、アウトライン、サンプルコード、図の作り方、継続的な見直し"
+    ],
+    "lang": "ja",
+    "archived": null
   },
   {
     "id": "b65bf641",
@@ -172,14 +406,19 @@
     "published": "2026-11-13",
     "read": "2026-11-20",
     "category": "career",
+    "kind": "article",
     "tags": [
       "見積もり",
-      "工数",
-      "プロジェクト管理",
-      "三点見積もり"
+      "工数"
     ],
     "summary": "概算見積もりを、数量×単位あたりの工数の式で出し、単位工数は過去実績から求め、三点見積もりで幅と確率を添えて伝える方法。",
-    "lang": "ja"
+    "points": [
+      "工数 = 画面数 × 1画面あたりの工数。単位工数は過去案件の実績の平均で出す",
+      "三点見積法の楽観・最可能・悲観も実績から出し、1つの数字でなく幅と確率で伝える",
+      "例の数字では最可能値が10人月でも期待値は11人月、約8割で収まる線は約12.7人月"
+    ],
+    "lang": "ja",
+    "archived": null
   },
   {
     "id": "364d1d8e",
@@ -190,14 +429,19 @@
     "published": "2026-11-17",
     "read": "2026-11-20",
     "category": "career",
+    "kind": "article",
     "tags": [
       "1on1",
-      "マネジメント",
-      "コーチング",
-      "コミュニケーション"
+      "マネジメント"
     ],
     "summary": "インフラ中間管理職が 1on1 で実践している11の工夫を、事前ヒアリング、座る位置、沈黙の待ち方、相手を主語にした質問などを挙げて紹介する。",
-    "lang": "ja"
+    "points": [
+      "「最近どう？」と聞かず、事前に同じ案件のメンバーへ様子をヒアリングしておく",
+      "真正面ではなく斜め前（L字）に座る。根拠はスティンザー効果",
+      "進捗確認や御用聞きにせず、課題解決の主導権（オーナーシップ）を相手に渡す"
+    ],
+    "lang": "ja",
+    "archived": null
   },
   {
     "id": "5ee8bba1",
@@ -208,15 +452,21 @@
     "published": "2020-12-05",
     "read": "2026-11-20",
     "category": "infra",
+    "kind": "article",
     "tags": [
       "kubernetes",
       "コンテナランタイム",
       "containerd",
-      "cri-o",
       "docker"
     ],
     "summary": "Kubernetes v1.20 での Docker 非推奨を題材に、高レベルランタイムと低レベルランタイムの役割分担と CRI / OCI の関係を整理する。",
-    "lang": "ja"
+    "points": [
+      "Kubernetes と高レベルランタイムの間は CRI、高レベルと低レベルの間は OCI で連携する",
+      "Docker は CRI に準拠せず dockershim を介していた。CRI 準拠の containerd が代わりになった",
+      "ランタイムを Docker から替えても既存のコンテナは動く。Docker in Docker は影響を受ける"
+    ],
+    "lang": "ja",
+    "archived": null
   },
   {
     "id": "dbb4de24",
@@ -227,15 +477,19 @@
     "published": "2026-10-10",
     "read": "2026-11-20",
     "category": "security",
+    "kind": "article",
     "tags": [
       "microsoft-entra-id",
-      "microsoft-365",
-      "パスキー",
-      "条件付きアクセス",
-      "ゼロトラスト"
+      "パスキー"
     ],
     "summary": "パスキー、条件付きアクセス、ブレイクグラス、PIM、Defender など、Microsoft 環境で優先して取り組むセキュリティ対策を順に紹介する。",
-    "lang": "ja"
+    "points": [
+      "対策の順番は、パスキー、条件付きアクセス、Break Glass、PIM、Device Code Flow、メール保護、GSA、Defender",
+      "パスキーは FIDO 標準の公開鍵暗号を使い、偽サイトへ認証情報を渡すフィッシングに強い",
+      "初めて導入する FIDO2 セキュリティキーには YubiKey を推奨している"
+    ],
+    "lang": "ja",
+    "archived": null
   },
   {
     "id": "c426f261",
@@ -246,13 +500,18 @@
     "published": "2026-11-19",
     "read": "2026-11-20",
     "category": "ai",
+    "kind": "article",
     "tags": [
       "muse",
-      "aiエージェント",
-      "vm",
-      "実測"
+      "aiエージェント"
     ],
     "summary": "パーソナルAIエージェント Muse の VM が約2時間ごとに入れ替わる頻度を実測し、状態をファイルに置く前提で作業を設計し直す方法。",
-    "lang": "ja"
+    "points": [
+      "boot_id を5分間隔で照合し、約24.6時間で14世代、寿命の中央値は約116分だった",
+      "消えるのはプロセス、/tmp、システム領域の変更。ホーム配下のファイルは残る",
+      "処理の状態を DONE / FAILED / RUNNING / LOST で管理する job-runner で対策した"
+    ],
+    "lang": "ja",
+    "archived": null
   }
 ]
