@@ -1,5 +1,23 @@
 [
   {
+    "id": "683ac052",
+    "url": "https://tech.codmon.com/entry/2026/10/23/173909",
+    "title": "PHP2Shellへの対応を振り返って",
+    "site": "tech.codmon.com",
+    "author": null,
+    "published": "2026-10-23",
+    "read": "2026-11-20",
+    "category": "security",
+    "tags": [
+      "php",
+      "php2shell",
+      "インシデント対応",
+      "サービス停止"
+    ],
+    "summary": "PHP2Shell への予防措置として日中にサービスを停止してから、修正版を待つ自前ビルドの準備と再開までを、判断と反省点を含めて時系列で振り返る。",
+    "lang": "ja"
+  },
+  {
     "id": "5687238e",
     "url": "https://tech.newmo.me/entry/2026/10/27/100000",
     "title": "プルリクエストのリスクを判定する仕組み",
