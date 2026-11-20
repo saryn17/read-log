@@ -5,8 +5,9 @@
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
 
-  const OPS = ['tag', 'cat', 'site', 'lang', 'read', 'pub'];
+  const OPS = ['tag', 'cat', 'site', 'lang', 'kind', 'read', 'pub'];
   const OP_RE = new RegExp('^(' + OPS.join('|') + '):(.+)$', 'i');
+  const KIND_LABEL = { article: '記事', slide: 'スライド', video: '動画', paper: '論文', book: '書籍' };
 
   /** NFKC, lowercase, katakana folded to hiragana so ネットワーク and ねっとわーく meet. */
   function norm(s) {
@@ -55,7 +56,7 @@
 
   function compile(str) {
     const toks = tokenize(str);
-    const cq = { tagGroups: [], notTags: [], cats: [], notCats: [], sites: [], notSites: [], langs: [], reads: [], pubs: [], terms: [] };
+    const cq = { tagGroups: [], notTags: [], cats: [], notCats: [], sites: [], notSites: [], kinds: [], notKinds: [], langs: [], reads: [], pubs: [], terms: [] };
     for (const t of toks) {
       if (t.kind === 'term') {
         cq.terms.push({ t: norm(t.value), neg: t.neg, raw: t.value });
@@ -66,6 +67,7 @@
       if (t.key === 'tag') (t.neg ? cq.notTags.push(...vals) : cq.tagGroups.push(vals));
       else if (t.key === 'cat') (t.neg ? cq.notCats : cq.cats).push(...vals);
       else if (t.key === 'site') (t.neg ? cq.notSites : cq.sites).push(...vals);
+      else if (t.key === 'kind') (t.neg ? cq.notKinds : cq.kinds).push(...vals);
       else if (t.key === 'lang') cq.langs.push(...vals);
       else if (t.key === 'read') cq.reads.push(...vals);
       else if (t.key === 'pub') cq.pubs.push(...vals);
@@ -80,8 +82,16 @@
     for (const c of categories) labelOf[c.id] = c.label;
     return articles.map((a) => {
       const label = labelOf[a.category] || a.category;
+      const kind = a.kind || 'article';
+      const kindLabel = KIND_LABEL[kind] || kind;
       return Object.assign({}, a, {
         tags: a.tags || [],
+        points: a.points || [],
+        kind,
+        kindLabel,
+        _kind: norm(kind),
+        _kindLabel: norm(kindLabel),
+        _pts: (a.points || []).map(norm),
         _t: norm(a.title),
         _s: norm(a.summary),
         _tags: (a.tags || []).map(norm),
@@ -122,7 +132,7 @@
   }
 
   function has(a, term) {
-    return a._t.includes(term) || a._s.includes(term) || a._tags.some((g) => g.includes(term)) ||
+    return a._t.includes(term) || a._s.includes(term) || a._pts.some((p) => p.includes(term)) || a._tags.some((g) => g.includes(term)) ||
       a._site.includes(term) || a._auth.includes(term) || a._cat.includes(term) || a._url.includes(term);
   }
 
@@ -135,6 +145,7 @@
       if (g.includes(term)) { s += 5; break; }
     }
     if (a._s.includes(term)) s += 3;
+    if (a._pts.some((p) => p.includes(term))) s += 2;
     if (a._site.includes(term) || a._auth.includes(term) || a._cat.includes(term)) s += 3;
     if (s === 0 && a._url.includes(term)) s = 1;
     if (s === 0 && fuzzyWord(a, term)) s = 1;
@@ -156,6 +167,10 @@
       if (cq.sites.length && !cq.sites.some((v) => a._site.includes(v))) return -1;
       if (cq.notSites.some((v) => a._site.includes(v))) return -1;
     }
+    if (skip !== 'kind') {
+      if (cq.kinds.length && !cq.kinds.some((v) => a._kind === v || a._kindLabel === v)) return -1;
+      if (cq.notKinds.some((v) => a._kind === v || a._kindLabel === v)) return -1;
+    }
     if (cq.langs.length && !cq.langs.includes(norm(a.lang))) return -1;
     if (cq.reads.length && !cq.reads.some((v) => a.read.startsWith(v))) return -1;
     if (cq.pubs.length && !cq.pubs.some((v) => (a.published || '').startsWith(v))) return -1;
@@ -170,6 +185,15 @@
       }
     }
     return score;
+  }
+
+  /** Key points that contain a positive term. A card shows them when the match is not visible in its title or summary. */
+  function pointMatches(a, terms) {
+    const needles = terms.filter((t) => !t.neg && t.t).map((t) => t.t);
+    if (!needles.length) return [];
+    const inTitleOrSummary = needles.every((n) => a._t.includes(n) || a._s.includes(n));
+    if (inTitleOrSummary) return [];
+    return a.points.filter((p, i) => needles.some((n) => a._pts[i].includes(n)));
   }
 
   function filterItems(items, cq, skip) {
@@ -259,10 +283,10 @@
     };
   }
 
-  /** index = { tags: Map(tag -> n), cats: [{id,label,n}], sites: Map(site -> n) } */
+  /** index = { tags: Map(tag -> n), cats: [{id,label,n}], sites: Map(site -> n), kinds?: [{id,label,n}] } */
   function suggest(token, index, limit) {
     limit = limit || 8;
-    const m = /^(-?)(tag|cat|site|lang):(.*)$/i.exec(token);
+    const m = /^(-?)(tag|cat|site|kind|lang):(.*)$/i.exec(token);
     const byCount = (x, y) => y.n - x.n || cmpStr(x.v, y.v);
     const rank = (list, q) => {
       const starts = list.filter((c) => norm(c.v).startsWith(q) || (c.alt && norm(c.alt).startsWith(q)));
@@ -273,6 +297,7 @@
       ...Array.from(index.tags, ([v, n]) => ({ kind: 'tag', v, n })),
       ...index.cats.map((c) => ({ kind: 'cat', v: c.id, alt: c.label, n: c.n })),
       ...Array.from(index.sites, ([v, n]) => ({ kind: 'site', v, n })),
+      ...(index.kinds || []).map((c) => ({ kind: 'kind', v: c.id, alt: c.label, n: c.n })),
     ];
     let list;
     if (m) {
@@ -312,5 +337,5 @@
     return out + esc(text.slice(pos));
   }
 
-  return { OPS, norm, esc, tokenize, splitQuery, joinQuery, compile, prepare, matchArticle, filterItems, sortItems, groupItems, countBy, stats, suggest, highlight, editDistanceWithin };
+  return { OPS, KIND_LABEL, norm, esc, tokenize, splitQuery, joinQuery, compile, prepare, matchArticle, filterItems, pointMatches, sortItems, groupItems, countBy, stats, suggest, highlight, editDistanceWithin };
 });

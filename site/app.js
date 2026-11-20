@@ -5,6 +5,7 @@
   const esc = L.esc;
   const PAGE = 48;
   const TAGS_SHOWN = 24;
+  const TAGS_PAD = 6; // when fewer tags than this are shared by 2+ articles, the most used ones fill up to it
   const SITES_SHOWN = 8;
   const SORTS = ['relevance', 'read-desc', 'read-asc', 'pub-desc', 'title', 'site'];
   const GROUPS = ['none', 'category', 'month', 'year', 'site'];
@@ -20,7 +21,7 @@
   const state = { chips: [], text: '', sort: null, group: 'none', view: 'card', limit: PAGE, tagsOpen: false, sitesOpen: false };
   let data = [];
   let cats = [];
-  let suggIndex = { tags: new Map(), cats: [], sites: new Map() };
+  let suggIndex = { tags: new Map(), cats: [], sites: new Map(), kinds: [] };
   let suggList = [];
   let suggActive = -1;
 
@@ -102,7 +103,7 @@
   function renderStats() {
     const s = L.stats(data);
     const byCat = L.countBy(data.map((a) => ({ a })), (a) => [a.category]);
-    const top = cats.map((c) => ({ c, n: byCat.get(c.id) || 0 })).filter((x) => x.n).sort((x, y) => y.n - x.n).slice(0, 5);
+    const top = cats.map((c) => ({ c, n: byCat.get(c.id) || 0 })).filter((x) => x.n).sort((x, y) => y.n - x.n);
     const max = Math.max(1, ...top.map((x) => x.n));
     const mmax = Math.max(1, ...s.months.map((m) => m.n));
     $('#stats').innerHTML =
@@ -135,6 +136,17 @@
         return `<button type="button" class="pbtn${on ? ' on' : ''}" data-toggle="cat:${esc(c.id)}" aria-pressed="${on}">${esc(c.label)}<span class="n">${catN.get(c.id) || 0}</span></button>`;
       }).join('');
 
+    // FORMAT row appears once the list holds more than one kind of material.
+    const kindN = L.countBy(L.filterItems(data, cq, 'kind'), (a) => [a.kind]);
+    const anyKind = state.chips.some((c) => /^kind:/i.test(c));
+    $('#r-kind').hidden = suggIndex.kinds.length < 2;
+    $('#f-kind').innerHTML =
+      `<button type="button" class="pbtn${anyKind ? '' : ' on'}" data-clear-facet="kind" aria-pressed="${!anyKind}">ALL</button>` +
+      suggIndex.kinds.filter((k) => kindN.get(k.id) || chipOn('kind:' + k.id)).map((k) => {
+        const on = chipOn('kind:' + k.id);
+        return `<button type="button" class="pbtn${on ? ' on' : ''}" data-toggle="kind:${esc(k.id)}" aria-pressed="${on}">${esc(k.label)}<span class="n">${kindN.get(k.id) || 0}</span></button>`;
+      }).join('');
+
     const tagBtn = ([t, n]) => {
       const on = chipOn('tag:' + t);
       return `<button type="button" class="tg${on ? ' on' : ''}" data-toggle="tag:${esc(t)}" aria-pressed="${on}">${esc(t)}<span class="n">${n}</span></button>`;
@@ -143,10 +155,13 @@
     const tagList = Array.from(tagN).sort((x, y) => y[1] - x[1] || x[0].localeCompare(y[0], 'ja'));
     const selected = selTags.map((t) => [t, tagN.get(t) || 0]);
     const rest = tagList.filter(([t]) => !selTags.includes(t));
-    const shown = state.tagsOpen ? rest : rest.slice(0, Math.max(0, TAGS_SHOWN - selected.length));
+    // A tag used by one article only narrows to that article, so it stays behind the "+N" button.
+    const shared = rest.filter(([t]) => (suggIndex.tags.get(t) || 0) >= 2);
+    const firstView = (shared.length >= TAGS_PAD ? shared : rest.slice(0, TAGS_PAD)).slice(0, Math.max(0, TAGS_SHOWN - selected.length));
+    const shown = state.tagsOpen ? rest : firstView;
     $('#f-tag').innerHTML = selected.concat(shown).map(tagBtn).join('') +
       (rest.length > shown.length ? `<button type="button" class="expand" data-expand="tags">+${rest.length - shown.length}</button>`
-        : state.tagsOpen && rest.length > TAGS_SHOWN ? `<button type="button" class="expand" data-expand="tags">−</button>` : '');
+        : state.tagsOpen && rest.length > firstView.length ? `<button type="button" class="expand" data-expand="tags">−</button>` : '');
 
     const siteList = Array.from(siteN).sort((x, y) => y[1] - x[1] || x[0].localeCompare(y[0]));
     const selSites = state.chips.filter((c) => /^site:[^,]+$/i.test(c)).map((c) => c.slice(5).toLowerCase());
@@ -173,14 +188,20 @@
     const link = `<a class="ttl" href="${esc(safeUrl(a.url))}" target="_blank" rel="noopener noreferrer">${L.highlight(a.title, terms)}</a>`;
     const cat = `<button type="button" class="cat" data-toggle="cat:${esc(a.category)}">${esc(a.catLabel)}</button>`;
     const site = `<button type="button" class="site" data-toggle="site:${esc(a.site)}">${L.highlight(a.site, terms)}</button>`;
+    // Key points are shown only when they are the reason the article matched.
+    const hits = L.pointMatches(a, terms).slice(0, 2);
+    const pts = hits.length ? `<ul class="pts">${hits.map((p) => `<li>${L.highlight(p, terms)}</li>`).join('')}</ul>` : '';
+    const kd = a.kind !== 'article' ? `<button type="button" class="kd" data-toggle="kind:${esc(a.kind)}">${esc(a.kind.toUpperCase())}</button>` : '';
+    const arc = a.archived && safeUrl(a.url) !== '#'
+      ? `<a class="arc" href="${esc('https://web.archive.org/web/' + a.url)}" target="_blank" rel="noopener noreferrer">ARCHIVE</a>` : '';
     if (state.view === 'list') {
       return `<article class="row"><span class="mono d">${fmtDateH(a.read)}</span>` +
-        `<div class="main">${link}<span class="sum">${L.highlight(a.summary, terms)}</span><div class="tags">${tags}</div></div>` +
-        `<span class="mono">${site}</span>${cat}</article>`;
+        `<div class="main">${link}<span class="sum">${L.highlight(a.summary, terms)}</span>${pts}<div class="tags">${tags}</div></div>` +
+        `<span class="mono lm">${site}${kd}${arc}</span>${cat}</article>`;
     }
     return `<article class="card"><div class="top">${cat}<span class="mono">${fmtDateH(a.read)}</span></div>` +
-      `${link}<p class="sum">${L.highlight(a.summary, terms)}</p><div class="tags">${tags}</div>` +
-      `<div class="bot mono">${site}${a.author ? `<span>${L.highlight(a.author, terms)}</span>` : ''}${a.published ? `<span>PUB ${fmtDateH(a.published)}</span>` : ''}</div></article>`;
+      `${link}<p class="sum">${L.highlight(a.summary, terms)}</p>${pts}<div class="tags">${tags}</div>` +
+      `<div class="bot mono">${site}${kd}${a.author ? `<span>${L.highlight(a.author, terms)}</span>` : ''}${a.published ? `<span>PUB ${fmtDateH(a.published)}</span>` : ''}${arc}</div></article>`;
   }
 
   function renderResults(cq, sortKey) {
@@ -227,15 +248,21 @@
     const tags = new Map();
     const sites = new Map();
     const catN = new Map();
+    const kindN = new Map();
     for (const a of data) {
       a.tags.forEach((t) => tags.set(t, (tags.get(t) || 0) + 1));
       sites.set(a.site, (sites.get(a.site) || 0) + 1);
       catN.set(a.category, (catN.get(a.category) || 0) + 1);
+      kindN.set(a.kind, (kindN.get(a.kind) || 0) + 1);
     }
-    suggIndex = { tags, sites, cats: cats.map((c) => ({ id: c.id, label: c.label, n: catN.get(c.id) || 0 })).filter((c) => c.n) };
+    suggIndex = {
+      tags, sites,
+      cats: cats.map((c) => ({ id: c.id, label: c.label, n: catN.get(c.id) || 0 })).filter((c) => c.n),
+      kinds: Object.keys(L.KIND_LABEL).map((id) => ({ id, label: L.KIND_LABEL[id], n: kindN.get(id) || 0 })).filter((k) => k.n),
+    };
   }
 
-  const KIND_LABEL = { tag: 'TAG', cat: 'CAT', site: 'SITE' };
+  const KIND_LABEL = { tag: 'TAG', cat: 'CAT', site: 'SITE', kind: 'FORMAT' };
 
   function updateSuggest() {
     const v = input.value;
@@ -251,7 +278,7 @@
     input.removeAttribute('aria-activedescendant');
     ul.innerHTML = suggList.map((s, i) =>
       `<li role="option" id="sg-${i}" data-sugg="${i}" class="${i === suggActive ? 'active' : ''}" aria-selected="${i === suggActive}">` +
-      `<span class="mono">${s.neg ? '−' : ''}${KIND_LABEL[s.kind]}</span><span>${esc(s.alt && s.kind === 'cat' ? s.alt : s.v)}</span><span class="mono">${s.n}</span></li>`).join('');
+      `<span class="mono">${s.neg ? '−' : ''}${KIND_LABEL[s.kind]}</span><span>${esc(s.alt && (s.kind === 'cat' || s.kind === 'kind') ? s.alt : s.v)}</span><span class="mono">${s.n}</span></li>`).join('');
     if (suggActive >= 0) input.setAttribute('aria-activedescendant', 'sg-' + suggActive);
   }
   function acceptSuggest(i) {

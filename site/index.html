@@ -15,7 +15,7 @@
 <header class="wrap bar">
   <span class="mono brand">READ LOG</span>
   <nav class="pill" aria-label="sections">
-    <button type="button" data-scroll="search">検索</button>
+    <button type="button" data-scroll="sbox">検索</button>
     <button type="button" data-scroll="facets">分類</button>
     <button type="button" data-scroll="results">記事</button>
   </nav>
@@ -26,13 +26,6 @@
   <section class="wrap hero">
     <div class="hero-l">
       <h1 class="display">Read<br>Log</h1>
-      <p class="mono" id="updated"></p>
-    </div>
-    <div class="stats on-dark" id="stats" aria-label="統計"></div>
-  </section>
-
-  <section class="wrap" id="search" aria-label="検索">
-    <div class="panel">
       <div class="sbox" id="sbox">
         <span class="mono lbl">SEARCH</span>
         <div class="chips" id="chips"></div>
@@ -42,8 +35,16 @@
         <button type="button" class="x" id="clear" data-clear-all hidden aria-label="条件をすべて解除">×</button>
         <ul id="sugg" class="sugg on-dark" role="listbox" hidden></ul>
       </div>
+      <p class="mono" id="updated"></p>
+    </div>
+    <div class="stats on-dark" id="stats" aria-label="統計"></div>
+  </section>
+
+  <section class="wrap" id="search" aria-label="検索">
+    <div class="panel">
       <dl class="facets" id="facets">
         <div class="frow"><dt class="mono">CATEGORY</dt><dd id="f-cat"></dd></div>
+        <div class="frow" id="r-kind" hidden><dt class="mono">FORMAT</dt><dd id="f-kind"></dd></div>
         <div class="frow"><dt class="mono">TAG</dt><dd id="f-tag"></dd></div>
         <div class="frow"><dt class="mono">SITE</dt><dd id="f-site"></dd></div>
       </dl>

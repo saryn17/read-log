@@ -44,6 +44,53 @@ test('text terms: AND, negation, quotes, kana folding', () => {
   assert.deepEqual(ids('ネットワーク'), ['3']);
 });
 
+const KDATA = L.prepare([
+  mk({ id: 'k1', url: 'https://x/1', title: 'Title one', site: 'x', read: '2025-03-01', category: 'ai', tags: [], summary: 'about agents', points: ['uses a boot_id check every 5 minutes', '消えるのは /tmp の中身'] }),
+  mk({ id: 'k2', url: 'https://speakerdeck.com/2', title: 'Slide two', site: 'speakerdeck.com', read: '2025-02-01', category: 'ai', tags: [], summary: 'deck', kind: 'slide', points: [] }),
+  mk({ id: 'k3', url: 'https://x/3', title: 'Book three', site: 'x', read: '2025-01-01', category: 'ai', tags: [], summary: 'sample', kind: 'book' }),
+], CATS);
+const kids = (q, skip) => L.sortItems(L.filterItems(KDATA, L.compile(q), skip), 'read-desc').map((x) => x.a.id);
+
+test('kind: operator filters by id or label; missing kind counts as article', () => {
+  assert.deepEqual(kids('kind:article'), ['k1']);
+  assert.deepEqual(kids('kind:slide'), ['k2']);
+  assert.deepEqual(kids('kind:スライド'), ['k2']);
+  assert.deepEqual(kids('kind:slide,book'), ['k2', 'k3']);
+  assert.deepEqual(kids('-kind:slide'), ['k1', 'k3']);
+  assert.deepEqual(kids('kind:video'), []);
+  assert.deepEqual(kids('kind:slide', 'kind'), ['k1', 'k2', 'k3']); // facet counts ignore their own group
+  assert.equal(KDATA[0].kindLabel, '記事');
+  assert.deepEqual(KDATA[0].points.length, 2);
+  assert.deepEqual(KDATA[2].points, []); // missing points become an empty list
+});
+
+test('key points are searched, rank below the summary, and are excluded by negation', () => {
+  assert.deepEqual(kids('boot_id'), ['k1']);
+  assert.deepEqual(kids('/tmp'), ['k1']);
+  assert.deepEqual(kids('-boot_id'), ['k2', 'k3']);
+  const data = L.prepare([
+    mk({ id: 'p', url: 'https://x/p', title: 'a', site: 'x', read: '2025-05-01', category: 'ai', tags: [], summary: '', points: ['mentions kafka'] }),
+    mk({ id: 's', url: 'https://x/s', title: 'b', site: 'x', read: '2025-01-01', category: 'ai', tags: [], summary: 'mentions kafka', points: [] }),
+  ], CATS);
+  assert.deepEqual(L.sortItems(L.filterItems(data, L.compile('kafka')), 'relevance').map((x) => x.a.id), ['s', 'p']);
+});
+
+test('pointMatches returns only points that explain a match hidden from title and summary', () => {
+  const a = KDATA[0];
+  assert.deepEqual(L.pointMatches(a, L.compile('boot_id').terms), ['uses a boot_id check every 5 minutes']);
+  assert.deepEqual(L.pointMatches(a, L.compile('agents').terms), []); // the summary already shows it
+  assert.deepEqual(L.pointMatches(a, L.compile('-boot_id').terms), []);
+  assert.deepEqual(L.pointMatches(a, L.compile('zzz').terms), []);
+  assert.deepEqual(L.pointMatches(a, []), []);
+});
+
+test('suggestions include kinds', () => {
+  const index = { tags: new Map(), cats: [], sites: new Map(), kinds: [{ id: 'slide', label: 'スライド', n: 2 }, { id: 'article', label: '記事', n: 5 }] };
+  assert.deepEqual(L.suggest('kind:sl', index).map((s) => s.v), ['slide']);
+  assert.deepEqual(L.suggest('kind:ス', index).map((s) => s.v), ['slide']);
+  assert.deepEqual(L.suggest('kind:', index).map((s) => s.v), ['article', 'slide']); // most articles first
+});
+
 test('fullwidth and case are normalized', () => {
   assert.deepEqual(ids('ＫＵＢＥＲＮＥＴＥＳ'), ['1']);
   assert.deepEqual(ids('AZURE'), ['2']);
