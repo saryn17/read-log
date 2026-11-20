@@ -1,5 +1,42 @@
 [
   {
+    "id": "5704239b",
+    "url": "https://inside.pixiv.blog/2026/10/22/193321",
+    "title": "PHP 8.5.12の緊急リリースにpixivはどう対応したか",
+    "site": "inside.pixiv.blog",
+    "author": null,
+    "published": "2026-10-22",
+    "read": "2026-11-20",
+    "category": "infra",
+    "tags": [
+      "php",
+      "php2shell",
+      "kubernetes",
+      "buildkit",
+      "セキュリティアップデート"
+    ],
+    "summary": "PHP2Shell の修正版リリースからメンテナンス解除までの約30分に行った、コンテナのフルビルドと Kubernetes へのロールアウト、当日のトラブル。",
+    "lang": "ja"
+  },
+  {
+    "id": "f08fdf66",
+    "url": "https://speakerdeck.com/watany/its-only-the-end-of-special-time",
+    "title": "たかが特別な時間の終わり / It's Only the End of Special Time",
+    "site": "speakerdeck.com",
+    "author": null,
+    "published": "2025-12-02",
+    "read": "2026-11-20",
+    "category": "career",
+    "tags": [
+      "コーディングエージェント",
+      "キャリア",
+      "ai",
+      "登壇資料"
+    ],
+    "summary": "コーディングエージェント以後の不確実なキャリアについて、35歳以下のエンジニア向けに話した Developers Boost 2025 の講演資料。",
+    "lang": "ja"
+  },
+  {
     "id": "1524f384",
     "url": "https://zenn.dev/koduki/articles/d3e8984f420b370681f9",
     "title": "データベースを遅くするための８つの方法",
