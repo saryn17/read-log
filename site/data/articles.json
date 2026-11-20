@@ -1,5 +1,77 @@
 [
   {
+    "id": "5687238e",
+    "url": "https://tech.newmo.me/entry/2026/10/27/100000",
+    "title": "プルリクエストのリスクを判定する仕組み",
+    "site": "tech.newmo.me",
+    "author": null,
+    "published": "2026-10-27",
+    "read": "2026-11-20",
+    "category": "tooling",
+    "tags": [
+      "プルリクエスト",
+      "コードレビュー",
+      "llm",
+      "riskjudge"
+    ],
+    "summary": "newmo が運用する PR 自動承認の仕組み riskjudge を、機械ゲート、LLM ゲート、複数回判定、決定式のレイヤ構成として紹介する。",
+    "lang": "ja"
+  },
+  {
+    "id": "6d456e3c",
+    "url": "https://tech.every.tv/entry/2026/10/30/124255",
+    "title": "個人情報を自社のDBに持たない設計は、どこまでできるのか",
+    "site": "tech.every.tv",
+    "author": null,
+    "published": "2026-10-30",
+    "read": "2026-11-20",
+    "category": "security",
+    "tags": [
+      "個人情報",
+      "idaas",
+      "個人情報保護法",
+      "設計"
+    ],
+    "summary": "認証や決済を外部サービスに任せて自社の DB から個人情報をどこまでなくせるかを、IDaaS の sub や個人情報保護法の線引きを交えて検討する。",
+    "lang": "ja"
+  },
+  {
+    "id": "03b2eda9",
+    "url": "https://speakerdeck.com/minorun365/jouji-kadou-ejento-no-tsukurikata",
+    "title": "常時稼働エージェントの作り方（Claude公式ブログを資料化）",
+    "site": "speakerdeck.com",
+    "author": null,
+    "published": "2026-11-14",
+    "read": "2026-11-20",
+    "category": "ai",
+    "tags": [
+      "aiエージェント",
+      "常時稼働エージェント",
+      "claude",
+      "登壇資料"
+    ],
+    "summary": "常時稼働エージェントを5つの部品に分けて解説した Claude 公式ブログ Building always-on agents を、スライドにまとめた資料。",
+    "lang": "ja"
+  },
+  {
+    "id": "a6552c6f",
+    "url": "https://qiita.com/har1101/items/ebd90aa7ce654c9c8c97",
+    "title": "Kubernetesの構成要素にガチ入門する",
+    "site": "qiita.com",
+    "author": null,
+    "published": "2026-11-17",
+    "read": "2026-11-20",
+    "category": "infra",
+    "tags": [
+      "kubernetes",
+      "docker",
+      "containerd",
+      "入門"
+    ],
+    "summary": "公式ドキュメントの構成要素の図に沿って、Kubernetes のクラスターなどの各要素を初学者が1つずつ噛み砕いて整理する。",
+    "lang": "ja"
+  },
+  {
     "id": "5704239b",
     "url": "https://inside.pixiv.blog/2026/10/22/193321",
     "title": "PHP 8.5.12の緊急リリースにpixivはどう対応したか",
