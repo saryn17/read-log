@@ -6,4 +6,5 @@
 - サイトの見た目は `DESIGN.md` に従う。影とグラデーションは使わない
 - 画面に説明文や操作案内を足さない。見た目で伝える
 - push は確認を取らずに行う（ユーザーの指示）。ただし public リポジトリなので、上がるファイルに個人情報や設定ファイルが入っていないことを先に確かめる
+- 記事の項目を増減したら、`scripts/readlog.py` の `FIELD_ORDER`、`normalize` の実行、README のデータ表、スキルの手順を一緒に直す
 - テスト: `python -m unittest discover -s tests` と `node --test tests/lib.test.js`
