@@ -1,5 +1,28 @@
 [
   {
+    "id": "5100f139",
+    "url": "https://docs.fujii-yuji.net/talks/2026-11-13-kichijoji-pm",
+    "title": "任せるとは何か",
+    "site": "docs.fujii-yuji.net",
+    "author": "フジイユウジ",
+    "published": "2026-11-13",
+    "read": "2026-11-23",
+    "category": "career",
+    "kind": "slide",
+    "tags": [
+      "マネジメント",
+      "任せる"
+    ],
+    "summary": "任せるとはどういうことかを、命令する、見てるだけ、なぞなぞという失敗の型から考える、吉祥寺.pm「マネジメントする人・される人ナイト」の登壇スライド。",
+    "points": [
+      "うまくいかない関わり方として、命令する、見てるだけ、なぞなぞの3つを挙げている",
+      "命令してはいけないのではなく、命令しかできないのが良くない、という立場",
+      "役に立たないフィードバックだけをするのは、放置より質が悪いとしている"
+    ],
+    "lang": "ja",
+    "archived": "2026-11-23"
+  },
+  {
     "id": "170e8054",
     "url": "https://bogus.jp/webapp_security_sample_100pages.pdf",
     "title": "Webアプリケーションセキュリティ入門",
