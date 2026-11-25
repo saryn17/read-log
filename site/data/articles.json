@@ -1,5 +1,51 @@
 [
   {
+    "id": "328d26de",
+    "url": "https://google.github.io/eng-practices/review/reviewer/standard.html",
+    "title": "The Standard of Code Review",
+    "site": "google.github.io",
+    "author": null,
+    "published": null,
+    "read": "2026-11-26",
+    "category": "tooling",
+    "kind": "article",
+    "tags": [
+      "コードレビュー",
+      "google"
+    ],
+    "summary": "Google のコードレビューの基準を、コードベース全体の健全性を改善し続けることを目的とする考え方から説明し、意見が分かれたときの解決手順を示す。",
+    "points": [
+      "完璧でなくても、全体の健全性が確実に良くなる CL は承認する。完璧なコードはなく、より良いコードがあるだけ",
+      "重要でない指摘には「Nit:」を付ける。スタイルはスタイルガイドが絶対の基準",
+      "意見が割れたら、合意、対面での話し合い、エスカレーションの順に進める"
+    ],
+    "lang": "en",
+    "archived": "2026-11-26"
+  },
+  {
+    "id": "845f3d54",
+    "url": "https://google.github.io/eng-practices/review/reviewer/looking-for.html",
+    "title": "What to look for in a code review",
+    "site": "google.github.io",
+    "author": null,
+    "published": null,
+    "read": "2026-11-26",
+    "category": "tooling",
+    "kind": "article",
+    "tags": [
+      "コードレビュー",
+      "google"
+    ],
+    "summary": "Google のエンジニアリング指針のうち、レビュー担当者が CL で確認する項目を、設計、機能、複雑さ、テスト、命名、コメント、スタイルなどに分けて示す。",
+    "points": [
+      "確認項目は設計、機能、複雑さ、テスト、命名、コメント、スタイル、一貫性、ドキュメントの順",
+      "過剰設計を警戒し、将来の問題ではなく今解くべき問題を解くよう促す",
+      "コメントは理由を書くもの。何をしているかの説明が要るなら、コードを単純にする"
+    ],
+    "lang": "en",
+    "archived": "2026-11-26"
+  },
+  {
     "id": "5100f139",
     "url": "https://docs.fujii-yuji.net/talks/2026-11-13-kichijoji-pm",
     "title": "任せるとは何か",
