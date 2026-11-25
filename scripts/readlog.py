@@ -37,9 +37,10 @@ DATA_DIR = Path(__file__).resolve().parent.parent / "site" / "data"
 
 FIELD_ORDER = ["id", "url", "title", "site", "author", "published", "read", "category", "kind", "tags",
                "summary", "points", "lang", "archived"]
-KINDS = ["article", "slide", "video", "paper", "book"]
+KINDS = ["article", "slide", "video", "paper", "book", "tool", "page"]
 # Format guessed from the domain when `kind` is not given. Anything else is an article.
-# "book" (books and PDF handbooks) is never guessed: give it explicitly.
+# "book" (books and PDF handbooks), "tool" (apps) and "page" (reference sites, collections such as an
+# advent calendar) are never guessed: give them explicitly.
 KIND_HOSTS = {
     "slide": ("speakerdeck.com", "docswell.com", "slideshare.net"),
     "video": ("youtube.com", "youtu.be", "nicovideo.jp", "vimeo.com"),
@@ -509,6 +510,47 @@ def cmd_fetch(args) -> int:
     return 1 if "error" in info else 0
 
 
+def http_get(url: str, timeout: int = 25) -> str:
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.read().decode("utf-8", "replace")
+
+
+def find_candidates(query: str) -> list[dict]:
+    """Look a title up on the sites' own search: Hatena Bookmark (any site), note, Qiita."""
+    import html as htmllib
+    q = urllib.parse.quote(query)
+    found: list[dict] = []
+
+    def hatena():
+        text = http_get(f"https://b.hatena.ne.jp/search/text?mode=rss&sort=popular&q={q}")
+        for item in re.findall(r"<item[^>]*>(.*?)</item>", text, re.S):
+            title, link = re.search(r"<title>(.*?)</title>", item, re.S), re.search(r"<link>(.*?)</link>", item, re.S)
+            if title and link:
+                yield htmllib.unescape(title.group(1)), link.group(1)
+
+    def note():
+        data = json.loads(http_get(f"https://note.com/api/v3/searches?context=note&q={q}&size=5"))
+        for n in data["data"]["notes"]["contents"]:
+            yield n.get("name") or "", f"https://note.com/{n['user']['urlname']}/n/{n['key']}"
+
+    def qiita():
+        for i in json.loads(http_get(f"https://qiita.com/api/v2/items?per_page=5&query={q}")):
+            yield i["title"], i["url"]
+
+    for source, fn in (("hatena", hatena), ("note", note), ("qiita", qiita)):
+        try:
+            found += [{"source": source, "title": t, "url": u} for t, u in list(fn())[:5]]
+        except Exception as e:  # one source being down must not hide the others
+            found.append({"source": source, "error": f"{type(e).__name__}: {e}"})
+    return found
+
+
+def cmd_find(args) -> int:
+    print(json.dumps(find_candidates(args.query), ensure_ascii=False, indent=2))
+    return 0
+
+
 def cmd_add(args) -> int:
     raw = read_input(args.file)
     raws = raw if isinstance(raw, list) else [raw]
@@ -703,7 +745,13 @@ def cmd_archive(args) -> int:
         else:
             failed.append({"url": items[i]["url"], "reason": reason})
     if archived:
-        write_json(articles_path(), items)
+        # Archiving takes minutes: reload so articles added meanwhile are not overwritten.
+        fresh = load_articles()
+        done = set(archived)
+        for a in fresh:
+            if a["url"] in done:
+                a["archived"] = today()
+        write_json(articles_path(), fresh)
     print(json.dumps({"archived": archived, "failed": failed}, ensure_ascii=False, indent=2))
     return 0
 
@@ -760,6 +808,7 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("fetch"); s.add_argument("url"); s.add_argument("--chars", type=int, default=1200); s.set_defaults(fn=cmd_fetch)
+    s = sub.add_parser("find"); s.add_argument("query"); s.set_defaults(fn=cmd_find)
     s = sub.add_parser("add"); s.add_argument("--file"); s.add_argument("--update", action="store_true"); s.set_defaults(fn=cmd_add)
     s = sub.add_parser("edit"); s.add_argument("--file"); s.set_defaults(fn=cmd_edit)
     s = sub.add_parser("archive"); s.add_argument("targets", nargs="*")

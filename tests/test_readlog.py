@@ -109,6 +109,14 @@ class EntryTests(unittest.TestCase):
         self.assertIsNone(e)
         self.assertTrue(any("kind" in m for m in errs))
 
+    def test_tool_and_page_are_accepted_only_when_given(self):
+        for kind in ("tool", "page"):
+            e, errs = self.good(url="https://protocolexplorer.org/", kind=kind)
+            self.assertEqual(errs, [])
+            self.assertEqual(e["kind"], kind)
+        e, _ = self.good(url="https://protocolexplorer.org/")
+        self.assertEqual(e["kind"], "article")
+
     def test_points_are_trimmed_and_limited(self):
         e, errs = self.good(points=["  一つ目\n です ", "", "二つ目"])
         self.assertEqual(errs, [])
@@ -292,6 +300,19 @@ class StoreTests(unittest.TestCase):
             run(["archive", "--delay", "0"])
         self.assertEqual([c.args[0] for c in req.call_args_list], ["https://a.com/2"])
 
+    def test_archive_keeps_articles_added_while_it_was_running(self):
+        self.add("https://a.com/1", "2025-01-01")
+
+        def slow_request(url, timeout):
+            self.add("https://a.com/2", "2025-02-01")  # added by another command during the wait
+            return True, "HTTP 200"
+        with mock.patch.object(readlog, "request_archive", side_effect=slow_request):
+            run(["archive", "--delay", "0"])
+        by_url = {a["url"]: a for a in self.stored()}
+        self.assertEqual(sorted(by_url), ["https://a.com/1", "https://a.com/2"])
+        self.assertEqual(by_url["https://a.com/1"]["archived"], readlog.today())
+        self.assertIsNone(by_url["https://a.com/2"]["archived"])
+
     def test_archive_unknown_target_is_an_error(self):
         self.add("https://a.com/1", "2025-01-01")
         with mock.patch.object(readlog, "request_archive") as req:
@@ -312,6 +333,21 @@ class StoreTests(unittest.TestCase):
         self.assertEqual(sorted(w["url"] for w in res["warn"]), ["https://a.com/3", "https://a.com/4"])
         with mock.patch.object(readlog, "probe", return_value=200):
             self.assertEqual(run(["check-links"])[0], 0)
+
+    def test_find_reads_each_source_and_survives_one_failing(self):
+        def fake(url, timeout=25):
+            if "b.hatena.ne.jp" in url:
+                return "<rss><item><title>A &amp; B</title><link>https://h.example/1</link></item></rss>"
+            if "note.com" in url:
+                raise OSError("down")
+            return json.dumps([{"title": "Q", "url": "https://qiita.com/u/items/1"}])
+        with mock.patch.object(readlog, "http_get", side_effect=fake):
+            code, out = run(["find", "タイトル"])
+        res = json.loads(out)
+        self.assertEqual(code, 0)
+        self.assertIn({"source": "hatena", "title": "A & B", "url": "https://h.example/1"}, res)
+        self.assertIn({"source": "qiita", "title": "Q", "url": "https://qiita.com/u/items/1"}, res)
+        self.assertTrue(any(r["source"] == "note" and "OSError" in r["error"] for r in res))
 
     def test_file_is_utf8_lf(self):
         self.add("https://a.com/1", "2025-01-01", title="日本語タイトル")

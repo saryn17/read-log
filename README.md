@@ -17,6 +17,7 @@ EOF
 | コマンド | 内容 |
 |---|---|
 | `fetch URL [--chars N]` | ページのタイトル、公開日、本文の冒頭（既定1200字）を JSON で出す |
+| `find 題名` | 題名から URL の候補を探す。はてなブックマーク（サイトを問わない）、note、Qiita の検索を引く |
 | `add [--update]` | 記事を追加する（配列で複数件）。重複は追加されない |
 | `edit` | 登録済みの記事の項目を直す。`id` か `url` と、変えたい項目だけを JSON で渡す |
 | `tags` | 使用中のカテゴリとタグを件数つきで出す |
@@ -37,7 +38,7 @@ EOF
 | `url`, `title`, `site`, `author` | 記事の情報。`site` はドメイン |
 | `published`, `read` | 公開日、読んだ日（`YYYY-MM-DD`） |
 | `category` | `site/data/categories.json` の id から1つ |
-| `kind` | `article` / `slide` / `video` / `paper` / `book`。ドメインから推定し、書籍や PDF の冊子は明示する |
+| `kind` | `article` / `slide` / `video` / `paper` / `book` / `tool` / `page`。ドメインから推定し、書籍、PDF の冊子、ツールやアプリ（`tool`）、参考サイトやアドベントカレンダーのような一覧ページ（`page`）は明示する |
 | `tags` | 1〜8個。小文字、空白はハイフン。`site/data/tag_aliases.json` の別名は置き換わる |
 | `summary` | 記事が扱う内容を事実で1文 |
 | `points` | 本文から読み取った事実を3つまで（1つ80字以内）。検索の対象になる |

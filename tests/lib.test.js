@@ -58,6 +58,7 @@ test('kind: operator filters by id or label; missing kind counts as article', ()
   assert.deepEqual(kids('kind:slide,book'), ['k2', 'k3']);
   assert.deepEqual(kids('-kind:slide'), ['k1', 'k3']);
   assert.deepEqual(kids('kind:video'), []);
+  assert.deepEqual([L.KIND_LABEL.tool, L.KIND_LABEL.page], ['ツール', 'サイト']);
   assert.deepEqual(kids('kind:slide', 'kind'), ['k1', 'k2', 'k3']); // facet counts ignore their own group
   assert.equal(KDATA[0].kindLabel, '記事');
   assert.deepEqual(KDATA[0].points.length, 2);

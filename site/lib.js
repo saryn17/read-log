@@ -7,7 +7,7 @@
 
   const OPS = ['tag', 'cat', 'site', 'lang', 'kind', 'read', 'pub'];
   const OP_RE = new RegExp('^(' + OPS.join('|') + '):(.+)$', 'i');
-  const KIND_LABEL = { article: '記事', slide: 'スライド', video: '動画', paper: '論文', book: '書籍' };
+  const KIND_LABEL = { article: '記事', slide: 'スライド', video: '動画', paper: '論文', book: '書籍', tool: 'ツール', page: 'サイト' };
 
   /** NFKC, lowercase, katakana folded to hiragana so ネットワーク and ねっとわーく meet. */
   function norm(s) {
