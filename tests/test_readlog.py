@@ -349,6 +349,36 @@ class StoreTests(unittest.TestCase):
         self.assertIn({"source": "qiita", "title": "Q", "url": "https://qiita.com/u/items/1"}, res)
         self.assertTrue(any(r["source"] == "note" and "OSError" in r["error"] for r in res))
 
+    def test_title_key_ignores_notation_but_not_content(self):
+        k = readlog.title_key
+        self.assertEqual(k("新卒３年目の 1 on 1 がしたい！"), k("新卒3年目の1on1がしたい"))
+        self.assertEqual(k("Kubernetesに爆速で入門したい!"), k("ＫＵＢＥＲＮＥＴＥＳに爆速で入門したい！"))
+        self.assertEqual(k("イベントいこう"), k("イベントイコウ"))
+        self.assertNotEqual(k("Kubernetesはなぜ難しいのか"), k("Kubernetesはなぜ簡単なのか"))
+
+    def test_title_variants_drop_truncated_tails_and_notes(self):
+        v = readlog.title_variants("「いつ終わる？」から「何パーセントで終わる？」でコミュニケーションするアジャイル～")
+        self.assertIn("「いつ終わる?」から「何パーセントで終わる?」でコミュニケーションするアジャイル", v)  # width-normalized, tail dropped
+        self.assertNotIn("~", v[-1])
+        self.assertIn("いつ終わる? から 何パーセントで終わる? でコミュニケーションするアジャイル~", v)  # brackets removed
+        self.assertIn("本番環境などでやらかしちゃった人Advent Calender2025", readlog.title_variants(
+            "本番環境などでやらかしちゃった人Advent Calender2025 (記事というより。。。)"))
+        self.assertIn("新卒3年目のひよっこマネージャーでも効果的な 1 on 1", readlog.title_variants(
+            "新卒３年目のひよっこマネージャーでも効果的な1on1～"))
+
+    def test_find_marks_results_that_match_ignoring_notation(self):
+        def fake(url, timeout=25):
+            if "b.hatena.ne.jp" in url:
+                return ("<rss><item><title>新卒3年目のひよっこマネージャーでも効果的な 1 on 1 がしたい！ - blog</title>"
+                        "<link>https://h.example/1</link></item>"
+                        "<item><title>別の記事</title><link>https://h.example/2</link></item></rss>")
+            return "[]" if "qiita" in url else json.dumps({"data": {"notes": {"contents": []}}})
+        with mock.patch.object(readlog, "http_get", side_effect=fake):
+            res = readlog.find_candidates("新卒３年目のひよっこマネージャーでも効果的な1on1～")
+        self.assertEqual(res[0]["url"], "https://h.example/1")
+        self.assertEqual(res[0]["match"], "close")
+        self.assertNotIn("match", [r for r in res if r["url"] == "https://h.example/2"][0])
+
     def test_file_is_utf8_lf(self):
         self.add("https://a.com/1", "2025-01-01", title="日本語タイトル")
         raw = (self.tmp / "articles.json").read_bytes()

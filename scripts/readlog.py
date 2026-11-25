@@ -516,7 +516,58 @@ def http_get(url: str, timeout: int = 25) -> str:
         return r.read().decode("utf-8", "replace")
 
 
+def title_key(text: str) -> str:
+    """Comparison key that ignores notation differences: width, case, spaces, punctuation, kana kind."""
+    t = unicodedata.normalize("NFKC", text).lower()
+    t = "".join(ch for ch in t if ch.isalnum())
+    # hiragana -> katakana, so "いこう" and "イコウ" compare equal
+    return "".join(chr(ord(ch) + 0x60) if "ぁ" <= ch <= "ゖ" else ch for ch in t)
+
+
+def title_variants(query: str) -> list[str]:
+    """The query as given, plus spellings that search engines tend to match: width-normalized,
+    without a truncated tail ("～..." or " - site"), without brackets, without the parenthesised note."""
+    q = unicodedata.normalize("NFKC", query).strip()
+    out = [query.strip(), q]
+    out.append(re.sub(r"[「」『』【】\[\]]", " ", q).strip())
+    out.append(re.sub(r"\s*[(（][^)）]*[)）]\s*$", "", q).strip())          # trailing (記事ではない) etc.
+    head = re.split(r"\s*(?:[~〜～]|\s-\s|\s/\s)", q, maxsplit=1)[0].strip()  # truncated tail
+    out.append(head)
+    out.append(re.sub(r"\s*(\d)\s*on\s*(\d)", r" \1 on \2", head, flags=re.I).strip())  # 1on1 -> 1 on 1
+    out.append(re.sub(r"\s*(\d) on (\d)", r"\1on\2", head, flags=re.I))              # 1 on 1 -> 1on1
+    seen: list[str] = []
+    for v in out:
+        if len(v) >= 2 and v not in seen:
+            seen.append(v)
+    return seen
+
+
 def find_candidates(query: str) -> list[dict]:
+    """Search every spelling of the title; mark results whose title matches ignoring notation."""
+    keys = {title_key(v) for v in title_variants(query) if len(title_key(v)) >= 6}
+    found: list[dict] = []
+    seen: set = set()
+    for variant in title_variants(query):
+        for r in search_sources(variant):
+            if "error" in r:
+                if (r["source"], r["error"]) in seen:
+                    continue
+                seen.add((r["source"], r["error"]))
+            else:
+                if r["url"] in seen:
+                    continue
+                seen.add(r["url"])
+                tk = title_key(r["title"])
+                if tk in keys:
+                    r["match"] = "exact"
+                elif any(k in tk or (len(tk) >= 8 and tk in k) for k in keys):
+                    r["match"] = "close"
+            found.append(r)
+    order = {"exact": 0, "close": 1}
+    return sorted(found, key=lambda r: order.get(r.get("match"), 2))
+
+
+def search_sources(query: str) -> list[dict]:
     """Look a title up on the sites' own search: Hatena Bookmark (any site), note, Qiita."""
     import html as htmllib
     q = urllib.parse.quote(query)
