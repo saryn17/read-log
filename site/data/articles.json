@@ -1,5 +1,575 @@
 [
   {
+    "id": "67a41cc1",
+    "url": "https://qiita.com/advent-calendar/2025/yarakashi",
+    "title": "本番環境などでやらかしちゃった人 - Qiita Advent Calendar 2025",
+    "site": "qiita.com",
+    "author": null,
+    "published": null,
+    "read": "2026-11-26",
+    "category": "other",
+    "kind": "page",
+    "tags": [
+      "アドベントカレンダー",
+      "障害"
+    ],
+    "summary": "本番環境や検証環境でのやらかしを共有するアドベントカレンダー。なぜ起きたか、次はどうするかを書くことを求めている。",
+    "points": [
+      "各記事に、やらかしが起きた理由と、再発を防ぐ方法を書く",
+      "2019年から毎年開かれ、過去の年のカレンダーへのリンクがある"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "e351d798",
+    "url": "https://zenn.dev/counterworks/articles/573954dcfa8bb6",
+    "title": "YAMLを数行変えただけでGithub Actionsの料金を70%削減できて実行時間まで減った話",
+    "site": "zenn.dev",
+    "author": null,
+    "published": "2025-12-01",
+    "read": "2026-11-26",
+    "category": "infra",
+    "kind": "article",
+    "tags": [
+      "github-actions",
+      "blacksmith"
+    ],
+    "summary": "GitHub Actions の runner を Blacksmith 製に変え、実行時間とコストが減った結果と、導入までの経緯を報告する。",
+    "points": [
+      "runs-on を blacksmith-2vcpu-ubuntu-2404 に変えるだけで、同じスペックの単価が半額",
+      "自動テストは約55分から約23分、Docker build は2分30秒から40秒ほどに短縮",
+      "費用は先月比で約70%削減"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "fa017f01",
+    "url": "https://qiita.com/hirokidaichi/items/51bfd7fa9e7a4a096d8b",
+    "title": "「いつ終わる？」から「何パーセントで終わる？」でコミュニケーションするアジャイルプロジェクトマネジメント",
+    "site": "qiita.com",
+    "author": "hirokidaichi",
+    "published": "2024-12-11",
+    "read": "2026-11-26",
+    "category": "career",
+    "kind": "article",
+    "tags": [
+      "アジャイル",
+      "見積もり"
+    ],
+    "summary": "納期を確率分布で捉え、モンテカルロシミュレーションで終了確率を予想する Web ツールとともに、見積り、コミットメント、ターゲットの区別を説明する。",
+    "points": [
+      "見積り、コミットメント、ターゲットを区別し、エンジニアとビジネスの認識のズレを減らす",
+      "コミットメントラインは60%完了、ビジネスターゲットは8割から9割の確率に置きたい",
+      "スクラムのチーム向けに、終了確率を予想する Web ツールを公開した"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "0144bd54",
+    "url": "https://zenn.dev/ubie_dev/articles/ade17afebabaa9",
+    "title": "Prompt Cachingを完全に理解してLLMコストを爆裂に下げる",
+    "site": "zenn.dev",
+    "author": null,
+    "published": "2025-12-02",
+    "read": "2026-11-26",
+    "category": "ai",
+    "kind": "article",
+    "tags": [
+      "llm",
+      "prompt-caching"
+    ],
+    "summary": "Ubie の医療 AI エージェントで使う Prompt Caching の考え方を、キャッシュが効くコンテキスト設計と OpenAI、Gemini、Claude での実装例で説明する。",
+    "points": [
+      "キャッシュは入力の先頭一致で効くため、変化しにくいプロンプトを先頭に置く",
+      "システムプロンプトに現在時刻を入れると履歴のキャッシュが崩れる。動的な値は Tool Use で取得する",
+      "キャッシュヒット時は、入力トークンのコストを90%ほど抑えられる"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "1e6691d6",
+    "url": "https://zenn.dev/dress_code/articles/89a5ceaa6eac37",
+    "title": "月間350件のプルリクを捌きつつ、実装タスクも並列でこなすために必要だったものはやっぱりgit worktreeでした。",
+    "site": "zenn.dev",
+    "author": null,
+    "published": "2025-12-02",
+    "read": "2026-11-26",
+    "category": "tooling",
+    "kind": "article",
+    "tags": [
+      "git-worktree",
+      "gwq"
+    ],
+    "summary": "月間350件以上の PR をレビューしながら実装も進めるために、git worktree と管理ツール gwq を使うようになった経緯と使い方を紹介する。",
+    "points": [
+      "worktree のコマンドは、パスとブランチを2段階で入力するのが苦手で、gwq を選んだ",
+      "gwq は、worktree のディレクトリへ移動せずに gwq exec でコマンドを実行できる",
+      "ghq でリポジトリを、gwq で worktree を管理する棲み分け"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "cfc22a84",
+    "url": "https://qiita.com/K5K/items/dcfb0f90277e07e487b1",
+    "title": "Kubernetesはなぜ難しいのか？",
+    "site": "qiita.com",
+    "author": "K5K",
+    "published": "2025-12-01",
+    "read": "2026-11-26",
+    "category": "infra",
+    "kind": "article",
+    "tags": [
+      "kubernetes",
+      "プラットフォーム"
+    ],
+    "summary": "Kubernetes の本質はコンテナ実行環境ではなくプラットフォームを実現するツールだとして、ECS と EKS を比べながら難しさの理由を説明する。",
+    "points": [
+      "Kubernetes の本質は、コンテナ実行環境ではなく、プラットフォームを実現するツール",
+      "ECS は他の AWS リソースと組み合わせる前提のコンテナ実行環境で、EKS は単体でプラットフォームになり得る",
+      "Pod や Namespace など個別の技術には触れない、初学者向けの記事"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "69a6c23d",
+    "url": "https://sizu.me/imaimai17468/posts/8d3b7uoiisz4",
+    "title": "モチベという言葉を使うのをやめようの会 2025",
+    "site": "sizu.me",
+    "author": "imaimai17468",
+    "published": "2025-11-29",
+    "read": "2026-11-26",
+    "category": "career",
+    "kind": "article",
+    "tags": [
+      "モチベーション",
+      "個人開発"
+    ],
+    "summary": "勉強や個人開発のモチベーションの上げ方を聞かれることへの答えとして、必要なのはモチベではなく規律だと語る。",
+    "points": [
+      "モチベがないならやらない。必要なのはモチベではなく規律",
+      "時間ではなく量を決め、実用最小限でも最後まで終わらせて成功体験を積む",
+      "作りながら勉強し、一番のファンが自分になれるアプリを作る"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "21996173",
+    "url": "https://qiita.com/nak435/items/1fca8f9dbfac6ccdf009",
+    "title": "zshの名前付きディレクトリがとても便利",
+    "site": "qiita.com",
+    "author": "nak435",
+    "published": "2025-08-30",
+    "read": "2026-11-26",
+    "category": "tooling",
+    "kind": "article",
+    "tags": [
+      "zsh",
+      "シェル"
+    ],
+    "summary": "zsh の名前付きディレクトリの定義方法と、CDABLE_VARS、AUTO_CD で移動を楽にする方法を、他のブログの写経としてまとめる。",
+    "points": [
+      "hash -d で名前付きディレクトリを定義し、cd ~名前 で移動する",
+      "CDABLE_VARS で ~ を省略でき、AUTO_CD でディレクトリ名だけで移動できる",
+      "ディレクトリの存在を確かめてから定義する関数 name_dir を書く"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "6e93cc5f",
+    "url": "https://syu-m-5151.hatenablog.com/entry/2025/11/25/135220",
+    "title": "「Postgres で試した？」と聞き返せるようになるまでもしくはなぜ私は雰囲気で技術を語るのか？ — Just use Postgres 読書感想文",
+    "site": "syu-m-5151.hatenablog.com",
+    "author": "nwiizo",
+    "published": "2025-11-25",
+    "read": "2026-11-26",
+    "category": "database",
+    "kind": "article",
+    "tags": [
+      "postgresql",
+      "技術選定"
+    ],
+    "summary": "書籍 Just Use Postgres! の読書感想文。新しいデータベースを足す前にまず Postgres で試す、という技術選定の考え方をまとめる。",
+    "points": [
+      "本の主張は、Postgres は万能ということではなく、既に使っているなら新しい DB を足す前にまず試すこと",
+      "技術選定は、替えの利く技術は流行に従い、替えの利きづらい基盤は標準に従い、競争優位の核は自ら設計する",
+      "Postgres、Redis、Elasticsearch、RabbitMQ、InfluxDB が同居し、3年後に導入理由を説明できる人がいなくなった例"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "dc99efa1",
+    "url": "https://speakerdeck.com/layerx/winwin-engineer-hiring-layerx-202502",
+    "title": "企業も候補者も納得する採用プロセスとは？ 〜LayerXの実践事例〜",
+    "site": "speakerdeck.com",
+    "author": "小峯 祥平",
+    "published": "2025-02-28",
+    "read": "2026-11-26",
+    "category": "career",
+    "kind": "slide",
+    "tags": [
+      "採用",
+      "選考"
+    ],
+    "summary": "エンジニア選考カンファレンスでの登壇資料。LayerX の採用で、技術力の見極め、入社後のミスマッチ、選考の負担にどう向き合うかを説明する。",
+    "points": [
+      "選考は企業が一方的に評価する場ではなく、お互いの適性を確認し合うフェアな場とする",
+      "課題は、技術力の見極め、入社後のミスマッチ、選考プロセスの負担の3つ",
+      "ミスマッチ対策として、カルチャーの確認とトライアルを使う"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "c5ffd3e9",
+    "url": "https://tsutawarudesign.com/",
+    "title": "伝わるデザイン｜研究発表のユニバーサルデザイン",
+    "site": "tsutawarudesign.com",
+    "author": null,
+    "published": null,
+    "read": "2026-11-26",
+    "category": "other",
+    "kind": "page",
+    "tags": [
+      "資料作成",
+      "デザイン"
+    ],
+    "summary": "研究発表、スライド、ポスター、申請書のための情報デザインの基本ルールを、読みやすさ、見やすさ、バリアフリーの3つの視点でまとめたサイト。",
+    "points": [
+      "「読みやすく」「見やすく」「バリアフリー」の3つの視点で、基本ルールとテクニックを整理している",
+      "対象はプレゼン資料、スライド、ポスター、申請書。書籍版へのリンクがある"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "9c6fa962",
+    "url": "https://zenn.dev/mattn/articles/3094881f936076",
+    "title": "kubernetes でケチケチ節約して複数のサイトを管理する",
+    "site": "zenn.dev",
+    "author": "mattn",
+    "published": "2025-11-11",
+    "read": "2026-11-26",
+    "category": "infra",
+    "kind": "article",
+    "tags": [
+      "kubernetes",
+      "external-dns"
+    ],
+    "summary": "1つのグローバルアドレスで複数のウェブサイトを運用するため、Ingress、external-dns、CNAME 用のドメインを組み合わせる構成を紹介する。",
+    "points": [
+      "1つの Ingress に複数ドメインの rules と tls をまとめ、証明書も1つにする",
+      "external-dns で、Ingress のホスト名から Cloudflare の DNS レコードを制御する",
+      "cname.example.jp のような CNAME 向けのドメインを用意し、複数ドメインをそこへ向ける"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "479e8b96",
+    "url": "https://www.docswell.com/s/a-zara-n/KPGX74-2025-08-14-143959",
+    "title": "設計・開発・テストにおけるセキュリティの実践と考え方を知ろう",
+    "site": "docswell.com",
+    "author": "Azara",
+    "published": "2025-08-14",
+    "read": "2026-11-26",
+    "category": "security",
+    "kind": "slide",
+    "tags": [
+      "shift-left",
+      "devsecops"
+    ],
+    "summary": "セキュリティ・キャンプ全国大会 2025 B2 の講義資料。開発ライフサイクルの各工程で、セキュリティをどう担保するかを扱う。",
+    "points": [
+      "Shift-Left を軸に、設計、実装、CI/CD、運用の各フェーズでの実践を扱う",
+      "後半は、プロダクトセキュリティ組織、メトリクスと KPI、セキュリティ投資の ROI 評価",
+      "最終章は、事後課題として CTF で脆弱性を見つける"
+    ],
+    "lang": "ja",
+    "archived": "2026-11-26"
+  },
+  {
+    "id": "936c75f8",
+    "url": "https://levtech.jp/media/article/interview/detail_742",
+    "title": "「イベント行こう」のやらされ感をなくす。ゼロから技術発信文化を組織に根付かせた方法【ログラス飯田意己】",
+    "site": "levtech.jp",
+    "author": null,
+    "published": "2025-10-21",
+    "read": "2026-11-26",
+    "category": "career",
+    "kind": "article",
+    "tags": [
+      "技術発信",
+      "コミュニティ"
+    ],
+    "summary": "ログラスの飯田意己さんへのインタビュー。エンジニアの社外発信を、やらされ感なく組織に根付かせる方法を語る。",
+    "points": [
+      "まず自分が登壇して「分かりやすい実績」を作り、SNS の反響を社内への説明材料にした",
+      "参加者が「やってよかった」と思えることが一番で、誘う側の熱量も要る",
+      "忙しくて行けない人には、いま困っている仕事の課題に直結する勉強会を提案する"
+    ],
+    "lang": "ja",
+    "archived": "2026-11-26"
+  },
+  {
+    "id": "ebac3646",
+    "url": "https://k4na.de/article/2025/10/pumasoft",
+    "title": "「ぷまソフト」問題に見る法令遵守と技術者倫理の課題",
+    "site": "k4na.de",
+    "author": "Yuzuki Kana",
+    "published": "2025-10-07",
+    "read": "2026-11-26",
+    "category": "security",
+    "kind": "article",
+    "tags": [
+      "個人情報",
+      "技術者倫理"
+    ],
+    "summary": "VRChat 向けモデルに同梱された「ぷまソフト」の挙動を、技術、個人情報保護法、刑法、プラットフォーム規約の面から整理し、課題を考える。",
+    "points": [
+      "BOOTH 事務局は、未ダウンロードの商品を自動取得するアプリの配布は規約に触れると回答した",
+      "開発者は配布を終了し、BOOTH は2025-10-10 にスクレイピングのガイドラインを見直した",
+      "終了後も常駐する、AppData にログが残るなど、終了すれば停止するという期待を満たさない挙動が指摘された"
+    ],
+    "lang": "ja",
+    "archived": "2026-11-26"
+  },
+  {
+    "id": "6fcd4c13",
+    "url": "https://protocolexplorer.org/",
+    "title": "Protocol Explorer",
+    "site": "protocolexplorer.org",
+    "author": null,
+    "published": null,
+    "read": "2026-11-26",
+    "category": "infra",
+    "kind": "tool",
+    "tags": [
+      "ネットワーク",
+      "プロトコル"
+    ],
+    "summary": "HTTP、TCP、DNS、TLS など39のネットワークプロトコルを、パケットのアニメーションとバイト単位のデコードで学ぶ Web ツール。",
+    "points": [
+      "プロトコルを L2 から L7 の階層ごとに一覧し、パケットを選ぶとフィールドとバイトを確認できる",
+      "シーケンス図とネットワークトポロジーを使った試験モードがある"
+    ],
+    "lang": "en",
+    "archived": "2026-11-26"
+  },
+  {
+    "id": "880c1d6e",
+    "url": "https://www.htmhell.dev/",
+    "title": "Markup from hell",
+    "site": "htmhell.dev",
+    "author": null,
+    "published": null,
+    "read": "2026-11-26",
+    "category": "frontend",
+    "kind": "article",
+    "tags": [
+      "html",
+      "アクセシビリティ"
+    ],
+    "summary": "実在する Web ページから集めた HTML の悪い実践例を、コード片と修正のヒントつきで並べるサイト。",
+    "points": [
+      "各例に番号が付き、投稿者名とコード片、修正方法の解説ページがある",
+      "#35 は button の中に table を入れたボタン、#34 は button で window.open するリンク"
+    ],
+    "lang": "en",
+    "archived": null
+  },
+  {
+    "id": "935fc117",
+    "url": "https://www.nri.com/jp/knowledge/report/20250109_1.html",
+    "title": "壊さないから再生しない日本。足りないのはリーダーの嫌われる勇気",
+    "site": "nri.com",
+    "author": "中島 済",
+    "published": "2025-01-09",
+    "read": "2026-11-26",
+    "category": "career",
+    "kind": "article",
+    "tags": [
+      "リーダーシップ",
+      "スクラップアンドビルド"
+    ],
+    "summary": "日本が成長軌道に戻れないのは古い非効率なものを捨てられないからだとして、リーダーに求められる覚悟を考察する NRI 未来創発センターの研究レポート。",
+    "points": [
+      "スクラップアンドビルドのスクラップができないため、ビルドに集中できない",
+      "古い非効率的なもの、やり方を捨てられないことが、成長軌道に戻れない原因"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "10224131",
+    "url": "https://hayatoito.github.io/2020/investing",
+    "title": "普通の人が資産運用で99点をとる方法とその考え方",
+    "site": "hayatoito.github.io",
+    "author": "Hayato Ito",
+    "published": "2020-01-04",
+    "read": "2026-11-26",
+    "category": "other",
+    "kind": "article",
+    "tags": [
+      "資産運用",
+      "nisa"
+    ],
+    "summary": "iDeCo と NISA で低コストの時価総額加重平均インデックスファンドを積み立てれば、資産運用の効率が99点になるという方法と理論を説明する。",
+    "points": [
+      "iDeCo、NISA、特定口座の順に、低コストの時価総額加重平均インデックスファンドを積み立てる",
+      "してはいけないのは、マーケットタイミング、個別株、アクティブファンド、高配当株の購入",
+      "年に30分以上運用に時間を使っていれば、最初の方針から外れている目安"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "7000f481",
+    "url": "https://joisino.hatenablog.com/entry/physics",
+    "title": "言語モデルの物理学",
+    "site": "joisino.hatenablog.com",
+    "author": "joisino",
+    "published": "2025-03-24",
+    "read": "2026-11-26",
+    "category": "ai",
+    "kind": "article",
+    "tags": [
+      "llm",
+      "言語モデルの物理学"
+    ],
+    "summary": "FAIR の Zeyuan Allen-Zhu が提唱する言語モデルの物理学の考え方と、6本の論文の内容を日本語で解説する。",
+    "points": [
+      "特徴は、統制したデータセットでスクラッチから訓練することと、内部状態を調べること",
+      "言語モデルは、途中で間違えたとき、頭の中でもその誤りに気づいている",
+      "言語モデルはパラメータ1つにつき約2ビットの情報を記憶できる"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "c114e49c",
+    "url": "https://syu-m-5151.hatenablog.com/entry/2025/10/01/203633",
+    "title": "システムを作る人がまず理解すべきシステム思考の基礎",
+    "site": "syu-m-5151.hatenablog.com",
+    "author": "nwiizo",
+    "published": "2025-10-01",
+    "read": "2026-11-26",
+    "category": "architecture",
+    "kind": "article",
+    "tags": [
+      "システム思考",
+      "氷山モデル"
+    ],
+    "summary": "システム思考の基本概念を、API の負荷、AI が生成したコードの理解、繰り返すリリース障害の例で説明し、新人エンジニア向けの習慣を示す。",
+    "points": [
+      "線形思考の限界: API を速くすると別サービスに負荷が集中するなど、変更は関係の中で見る",
+      "AI がもたらす3つの非対称性は、生産と理解、生産量と成長、経験の量と学びの質",
+      "習慣は、違和感に気づく、変更前に影響範囲の図を描く、PR に判断の過程を書く"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "6c0a94e8",
+    "url": "https://next49.hatenadiary.jp/entry/20090222/p2",
+    "title": "価値の判断基準が自分の外にある人間は表現者になれない",
+    "site": "next49.hatenadiary.jp",
+    "author": null,
+    "published": "2009-02-21",
+    "read": "2026-11-26",
+    "category": "career",
+    "kind": "article",
+    "tags": [
+      "表現",
+      "価値判断"
+    ],
+    "summary": "卒論に苦しんだ学生に、価値判断の基準が外にあることが原因だと伝える、卒業を迎える教員から学生への手紙。",
+    "points": [
+      "精神的な背骨がある人は、間違いを許容でき、判断基準を強化も変更もできる",
+      "判断基準が外にある人は、他人に嫌われないことしか選べない",
+      "表現とは、内部の基準に基づいて自分の考えを外に問うこと。反論を受けても背骨は守る"
+    ],
+    "lang": "ja",
+    "archived": "2026-11-26"
+  },
+  {
+    "id": "7041598a",
+    "url": "https://qiita.com/yama3133/items/5416c243e14a5406dd6f",
+    "title": "東京リージョンで使っていてもバージニア北部に依存しているもの",
+    "site": "qiita.com",
+    "author": "yama3133",
+    "published": "2026-11-06",
+    "read": "2026-11-26",
+    "category": "cloud",
+    "kind": "article",
+    "tags": [
+      "aws",
+      "us-east-1"
+    ],
+    "summary": "コントロールプレーンが us-east-1 にある AWS のサービスと、東京でも us-east-1 に置くログや監視データを、公式資料から整理する。",
+    "points": [
+      "IAM、Route 53、CloudFront、Organizations のコントロールプレーンは us-east-1 にある",
+      "Route 53 のクエリログと CloudFront 用 WAF のログは、us-east-1 に作る必要がある",
+      "us-east-1 の障害時、稼働中の処理は続くが、IAM や Route 53 の変更操作はできなくなる恐れがある"
+    ],
+    "lang": "ja",
+    "archived": "2026-11-26"
+  },
+  {
+    "id": "7c8cee8b",
+    "url": "https://aws.amazon.com/jp/builders-flash/202511/review-sushi-delivery-system-architecture",
+    "title": "AWS の新卒社員が考えた寿司配送システムのアーキテクチャを、ベテラン社員にレビューしてもらってみた",
+    "site": "aws.amazon.com",
+    "author": "冨山 英佑, 菅原 太樹, 濵 真一",
+    "published": "2025-11-04",
+    "read": "2026-11-26",
+    "category": "cloud",
+    "kind": "article",
+    "tags": [
+      "aws",
+      "step-functions"
+    ],
+    "summary": "AWS Summit Japan 2025 で展示した寿司配送システム Cloud Sushi を、新卒 SA が先輩 SA にレビューしてもらい、改善案を整理する。",
+    "points": [
+      "構成は Step Functions 2つ（注文、配送モノレール）と IoT Core。Lambda は極力使わない設計",
+      "指摘1: 注文受付は非同期で足りる。API Gateway、DynamoDB Streams、EventBridge Pipes、SQS の案",
+      "指摘2: 注文の状態を管理画面で見るため、状態は DynamoDB に持たせる案"
+    ],
+    "lang": "ja",
+    "archived": "2026-11-26"
+  },
+  {
+    "id": "85aaa9c9",
+    "url": "https://talks.mozumasu.com/kubernetes-intro",
+    "title": "Kubernetesに爆速で入門したい!",
+    "site": "talks.mozumasu.com",
+    "author": "mozumasu",
+    "published": "2026-11-25",
+    "read": "2026-11-26",
+    "category": "infra",
+    "kind": "slide",
+    "tags": [
+      "kubernetes",
+      "入門"
+    ],
+    "summary": "TechBull mini LT &交流会! #5 の登壇資料。深夜3時に手で復旧する運用者の物語から、Kubernetes が自動で復旧する仕組みを説明する。",
+    "points": [
+      "scheduler は Pod の行き先を書き込むだけで、起動するのは kubelet",
+      "Pod は、置き場所が空欄のまま controller-manager が先に登録する",
+      "Appendix は kubeswitch での向き先の切替、kind のハンズオン、Deployment と Service"
+    ],
+    "lang": "ja",
+    "archived": "2026-11-26"
+  },
+  {
     "id": "328d26de",
     "url": "https://google.github.io/eng-practices/review/reviewer/standard.html",
     "title": "The Standard of Code Review",
