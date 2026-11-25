@@ -1,5 +1,120 @@
 [
   {
+    "id": "1aaa200e",
+    "url": "https://konifar.hatenablog.com/entry/2015/05/23/161318",
+    "title": "アウトプット増やしたらぼっちじゃなくなってきた",
+    "site": "konifar.hatenablog.com",
+    "author": "konifar",
+    "published": "2015-05-23",
+    "read": "2026-11-26",
+    "category": "career",
+    "kind": "article",
+    "tags": [
+      "アウトプット",
+      "勉強会"
+    ],
+    "summary": "2015年に4か月かけてアウトプットを増やした結果、勉強会でぼっちになることが減ったと振り返る。",
+    "points": [
+      "試したのは、開発コンテスト、OSS、Qiita、勉強会での発表、ブログの5つ",
+      "発表は月2回と決め、LT を中心に数をこなした",
+      "発表やブログを見た人から、懇親会で話しかけてもらえるようになった"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "51582d4a",
+    "url": "https://eiji.page/blog/mdecho-intro",
+    "title": "AIのMarkdownで目が滑る？mdechoで読みやすくして返信！",
+    "site": "eiji.page",
+    "author": null,
+    "published": null,
+    "read": "2026-11-26",
+    "category": "tooling",
+    "kind": "article",
+    "tags": [
+      "markdown",
+      "mdecho"
+    ],
+    "summary": "AI が書いた Markdown を読みやすく表示し、クリックしたコメントを行番号つきで AI に返信できる CLI ツール mdecho を紹介する。",
+    "points": [
+      "ブラウザで Markdown を表示し、コメントをファイル名と行つきでクリップボードに入れて AI に返信できる",
+      "カーソル行を表示し、句点で改行して一文ずつ表示するオプションがある",
+      "テーブルは拡大して見られ、カラム幅を調整できる"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "422753db",
+    "url": "https://creators-note.chatwork.com/entry/2025/12/15/132841",
+    "title": "新卒3年目のひよっこマネージャーでも効果的な 1 on 1 がしたい！",
+    "site": "creators-note.chatwork.com",
+    "author": "須田",
+    "published": "2025-12-15",
+    "read": "2026-11-26",
+    "category": "career",
+    "kind": "article",
+    "tags": [
+      "1on1",
+      "マネジメント"
+    ],
+    "summary": "新卒3年目で EM になった著者が、メンバーとの信頼関係を作り直すため就任当日から始めた 1on1 の設計と、2か月間の取り組みを振り返る。",
+    "points": [
+      "EM として個人対個人の信頼関係を作り直す手段に、1on1 を選んだ",
+      "1on1 のあるある問題を先回りして防ぐため、1on1 の README を作り、初回に読み合わせる",
+      "README は内容を決めすぎず、なぜやるか、誰がやるかを重視する"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "1b33f381",
+    "url": "https://speakerdeck.com/soudai/aim-for-the-goal",
+    "title": "仕事を前に進めるためのコツ - 判断と決断と共有 / Aim for the goal",
+    "site": "speakerdeck.com",
+    "author": "曽根 壮大",
+    "published": "2024-09-23",
+    "read": "2026-11-26",
+    "category": "career",
+    "kind": "slide",
+    "tags": [
+      "仕事術",
+      "意思決定"
+    ],
+    "summary": "PHPカンファレンス沖縄 2024 の登壇資料。仕事を終わらせるために必要なこと、判断と決断の違い、コミュニケーションのコツを説明する。",
+    "points": [
+      "未完成のコードや未テストのコードなど、納品できないものはすべて在庫で、未完了のタスクは成果にならない",
+      "仕事を終わらせる手順は、問題を理解し、計画し、実行し、振り返ること",
+      "構成は、問題の分解とタスク、判断と決断の違いとコツ、コミュニケーションのコツ"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "317bb1a7",
+    "url": "https://www.eisbahn.jp/yoichiro/2017/02/gitlab_live_streaming_comment.html",
+    "title": "GitLabの障害復旧風景",
+    "site": "eisbahn.jp",
+    "author": null,
+    "published": "2017-02-01",
+    "read": "2026-11-26",
+    "category": "infra",
+    "kind": "article",
+    "tags": [
+      "gitlab",
+      "障害対応"
+    ],
+    "summary": "2017年1月31日の GitLab.com のデータベース障害で、復旧作業のライブ配信を眺め、コメントに返事が来た体験を書く。",
+    "points": [
+      "障害で Issue と Merge Request が失われ、6時間前のスナップショットから復旧した",
+      "GitLab のエンジニアが復旧作業をライブストリーミングし、世界中から視聴者がコメントした",
+      "著者はメカニカルキーボードの打鍵音にコメントし、返事をもらった"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
     "id": "67a41cc1",
     "url": "https://qiita.com/advent-calendar/2025/yarakashi",
     "title": "本番環境などでやらかしちゃった人 - Qiita Advent Calendar 2025",
