@@ -32,5 +32,9 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
+      # deploy-pages lists the artifact 0.3s after it is finalized and can get an empty list
+      # ("Found 0 artifact(s)"); give the listing time to catch up.
+      - name: Wait for the artifact listing
+        run: sleep 20
       - id: deployment
         uses: actions/deploy-pages@v4
