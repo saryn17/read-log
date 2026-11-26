@@ -111,7 +111,7 @@
       const label = `${c.key}: ${c.n}`;
       if (!c.n) return `<i class="gd${c.today ? ' today' : ''}" title="${label}"></i>`;
       const on = chipOn('read:' + c.key);
-      return `<button type="button" class="gd l${c.level}${on ? ' on' : ''}${c.today ? ' today' : ''}" data-toggle="read:${c.key}" aria-pressed="${on}" aria-label="${label}" title="${label}"></button>`;
+      return `<button type="button" class="gd l${c.level}${on ? ' on' : ''}${c.today ? ' today' : ''}" data-day="${c.key}" aria-pressed="${on}" aria-label="${label}" title="${label}"></button>`;
     }).join('')).join('');
     $('#stats').innerHTML =
       `<div class="st-head mono"><span>TOTAL READ</span><span class="dot"></span></div>` +
@@ -348,11 +348,17 @@
   function reducedMotion() { return window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; }
 
   document.addEventListener('click', (e) => {
-    const el = e.target.closest('[data-toggle],[data-chip],[data-seg],[data-more],[data-clear-all],[data-clear-facet],[data-scroll],[data-expand]');
+    const el = e.target.closest('[data-toggle],[data-day],[data-chip],[data-seg],[data-more],[data-clear-all],[data-clear-facet],[data-scroll],[data-expand]');
     if (!el) return;
     const d = el.dataset;
     if (d.toggle !== undefined) { toggleChip(d.toggle); state.limit = PAGE; renderStats(); render(); }
-    else if (d.chip !== undefined) { state.chips.splice(Number(d.chip), 1); state.limit = PAGE; renderStats(); render(); }
+    else if (d.day !== undefined) {
+      // a day replaces any other day filter: narrowing to one day, not stacking dates
+      const was = chipOn('read:' + d.day);
+      state.chips = state.chips.filter((c) => !/^read:/i.test(c));
+      if (!was) state.chips.push('read:' + d.day);
+      state.limit = PAGE; renderStats(); render();
+    } else if (d.chip !== undefined) { state.chips.splice(Number(d.chip), 1); state.limit = PAGE; renderStats(); render(); }
     else if (d.seg) {
       if (d.seg === 'sort') state.sort = d.value;
       else state[d.seg] = d.value;
