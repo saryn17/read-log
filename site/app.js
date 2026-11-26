@@ -105,7 +105,14 @@
     const byCat = L.countBy(data.map((a) => ({ a })), (a) => [a.category]);
     const top = cats.map((c) => ({ c, n: byCat.get(c.id) || 0 })).filter((x) => x.n).sort((x, y) => y.n - x.n);
     const max = Math.max(1, ...top.map((x) => x.n));
-    const mmax = Math.max(1, ...s.months.map((m) => m.n));
+    const grid = L.dayGrid(data);
+    const cells = grid.cols.map((col) => col.map((c) => {
+      if (!c) return '<i class="gd none"></i>';
+      const label = `${c.key}: ${c.n}`;
+      if (!c.n) return `<i class="gd${c.today ? ' today' : ''}" title="${label}"></i>`;
+      const on = chipOn('read:' + c.key);
+      return `<button type="button" class="gd l${c.level}${on ? ' on' : ''}${c.today ? ' today' : ''}" data-toggle="read:${c.key}" aria-pressed="${on}" aria-label="${label}" title="${label}"></button>`;
+    }).join('')).join('');
     $('#stats').innerHTML =
       `<div class="st-head mono"><span>TOTAL READ</span><span class="dot"></span></div>` +
       `<div class="st-num">${pad(s.total, 3)}</div>` +
@@ -115,9 +122,8 @@
       (top.length ? `<div class="st-cats">${top.map((x) =>
         `<button type="button" class="brow${chipOn('cat:' + x.c.id) ? ' on' : ''}" data-toggle="cat:${esc(x.c.id)}">` +
         `<span class="mono">${esc(x.c.label)}</span><span class="track"><i style="width:${(x.n / max * 100).toFixed(1)}%"></i></span><span class="mono">${x.n}</span></button>`).join('')}</div>` : '') +
-      `<div><div class="st-months" role="img" aria-label="直近12か月の読了数">${s.months.map((m) =>
-        `<i class="${m.n ? 'has' : ''}${m.key === s.currentMonth ? ' now' : ''}" style="height:${m.n ? Math.max(8, m.n / mmax * 100) : 0}%" title="${m.key}: ${m.n}"></i>`).join('')}</div>` +
-      `<div class="st-foot mono"><span>${s.months[0].key}</span><span>${s.months[11].key}</span></div></div>`;
+      `<div><div class="st-grass" role="group" aria-label="日ごとの読了数">${cells}</div>` +
+      `<div class="st-foot mono"><span>${grid.first.slice(0, 7)}</span><span>${s.currentMonth}</span></div></div>`;
     $('#updated').textContent = s.latest ? 'UPDATED ' + fmtDate(s.latest) : '';
     $('#bar-count').textContent = pad(s.total, 3) + ' ARTICLES';
   }

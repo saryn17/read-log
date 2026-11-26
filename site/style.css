@@ -65,10 +65,17 @@ mark { background: var(--yellow); color: var(--carbon); border-radius: 2px; padd
 .brow .track i { display: block; height: 100%; background: var(--paper); border-radius: 8px; }
 .brow:hover .track i { background: var(--mint); }
 .brow.on .track i { background: var(--yellow); }
-.st-months { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; align-items: end; height: 56px; }
-.st-months i { display: block; background: var(--graphite); border-radius: 4px; min-height: 4px; }
-.st-months i.has { background: var(--paper); }
-.st-months i.now { background: var(--yellow); }
+/* day-by-day graph: one column per week, Sunday at the top; green steps are mint over carbon */
+.st-grass { display: grid; grid-template-columns: repeat(53, 1fr); grid-template-rows: repeat(7, auto); grid-auto-flow: column; gap: 2px; }
+.gd { display: block; aspect-ratio: 1; min-width: 0; padding: 0; border-radius: 2px; background: var(--graphite); }
+.gd.none { background: transparent; }
+.gd.l1 { background: #546651; }
+.gd.l2 { background: #7d9979; }
+.gd.l3 { background: #a7cca2; }
+.gd.l4 { background: var(--mint); }
+button.gd:hover { background: var(--paper); }
+.gd.on, button.gd.on:hover { background: var(--yellow); }
+.gd.today { outline: 1px solid var(--yellow); outline-offset: 1px; }
 .st-foot { display: flex; justify-content: space-between; color: var(--smoke); }
 
 /* ---------- search panel */
@@ -215,6 +222,7 @@ body.is-empty #search, body.is-empty .controls, body.is-empty #sbox { display: n
   .sbox { padding: 8px 14px; border-radius: 32px; }
   .brow { grid-template-columns: 7em 1fr 2em; }
   .st-row b { font-size: 32px; }
+  .st-grass { gap: 1px; }
   .seg { border-radius: 24px; padding-left: 12px; }
   .card { border-radius: 24px; }
   .gh h2 { font-size: 40px; }

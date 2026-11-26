@@ -258,6 +258,38 @@
     return m;
   }
 
+  /**
+   * Day grid for a contribution-style graph: `weeks` columns, Sunday first, ending with the week
+   * that holds `now`. Cells after `now` are null. level is 0 (nothing read) to 4.
+   */
+  function dayGrid(items, now, weeks) {
+    weeks = weeks || 53;
+    const d = now || new Date();
+    const pad2 = (n) => String(n).padStart(2, '0');
+    const key = (t) => t.getFullYear() + '-' + pad2(t.getMonth() + 1) + '-' + pad2(t.getDate());
+    const count = new Map();
+    for (const a of items) count.set(a.read, (count.get(a.read) || 0) + 1);
+    const today = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const start = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() - (weeks - 1) * 7);
+    const peak = Math.max(1, ...[...count.values()]);
+    const level = (n) => (n === 0 ? 0 : Math.min(4, Math.max(1, Math.ceil((n / peak) * 4))));
+    const cols = [];
+    let total = 0;
+    for (let w = 0; w < weeks; w++) {
+      const col = [];
+      for (let i = 0; i < 7; i++) {
+        const t = new Date(start.getFullYear(), start.getMonth(), start.getDate() + w * 7 + i);
+        if (t > today) { col.push(null); continue; }
+        const k = key(t);
+        const n = count.get(k) || 0;
+        total += n;
+        col.push({ key: k, n, level: level(n), today: t.getTime() === today.getTime() });
+      }
+      cols.push(col);
+    }
+    return { cols, total, peak, first: key(start) };
+  }
+
   function stats(items, now) {
     const d = now || new Date();
     const ym = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
@@ -337,5 +369,5 @@
     return out + esc(text.slice(pos));
   }
 
-  return { OPS, KIND_LABEL, norm, esc, tokenize, splitQuery, joinQuery, compile, prepare, matchArticle, filterItems, pointMatches, sortItems, groupItems, countBy, stats, suggest, highlight, editDistanceWithin };
+  return { OPS, KIND_LABEL, norm, esc, tokenize, splitQuery, joinQuery, compile, prepare, matchArticle, filterItems, pointMatches, sortItems, groupItems, countBy, stats, dayGrid, suggest, highlight, editDistanceWithin };
 });

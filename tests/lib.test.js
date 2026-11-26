@@ -176,3 +176,19 @@ test('stats counts this month and fills 12 month buckets', () => {
   assert.equal(s.months.find((m) => m.key === '2024-12').n, 1);
   assert.equal(s.tagCount, 7);
 });
+
+test('dayGrid lays out 53 week columns, Sunday first, with per-day counts and levels', () => {
+  const now = new Date(2026, 10, 26); // Thursday
+  const items = ['2026-11-23', '2026-11-23', '2026-11-23', '2026-11-25', '2025-01-01'].map((read) => ({ read }));
+  const g = L.dayGrid(items, now);
+  assert.equal(g.cols.length, 53);
+  assert.ok(g.cols.every((c) => c.length === 7));
+  assert.equal(g.first, '2025-11-23');
+  const last = g.cols[52];
+  assert.deepEqual(last.map((c) => c && c.key), ['2026-11-22', '2026-11-23', '2026-11-24', '2026-11-25', '2026-11-26', null, null]);
+  assert.deepEqual(last.slice(0, 5).map((c) => [c.n, c.level]), [[0, 0], [3, 4], [0, 0], [1, 2], [0, 0]]);
+  assert.equal(last[4].today, true);
+  assert.equal(last[3].today, false);
+  assert.equal(g.total, 4); // the 2025-01-01 read is outside the window
+  assert.equal(g.cols[0][0].key, '2025-11-23');
+});
