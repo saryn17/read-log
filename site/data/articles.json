@@ -1,5 +1,119 @@
 [
   {
+    "id": "ae7dc588",
+    "url": "https://motion-reference.takayustudio.jp/index.html",
+    "title": "モーションリファレンス | 動き・イージング辞典",
+    "site": "motion-reference.takayustudio.jp",
+    "author": null,
+    "published": null,
+    "read": "2026-11-28",
+    "category": "frontend",
+    "kind": "tool",
+    "tags": [
+      "デザイン",
+      "アニメーション"
+    ],
+    "summary": "動きの名前・速さ・イージングから、つくりたい感触のモーションを探せるリファレンス。782件をライブプレビューで再生できる。",
+    "points": [
+      "感触・用途・速さ（0.25×〜2×）で絞り込み、おすすめ順・短い順・名前順で並べ替えられる",
+      "試す文字をゴシック・明朝・等幅で切り替えて再生できる"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "5f371dcc",
+    "url": "https://www.on-link.jp/do-not-say-dns-propagation",
+    "title": "「DNS浸透」を「見て」みよう",
+    "site": "on-link.jp",
+    "author": null,
+    "published": null,
+    "read": "2026-11-28",
+    "category": "infra",
+    "kind": "tool",
+    "tags": [
+      "ネットワーク",
+      "dns"
+    ],
+    "summary": "DNS変更後に起きるのは「浸透」ではなくキャッシュの期限切れだと、リゾルバーとブラウザーのキャッシュ動作をシミュレーションで見せるデモ。",
+    "points": [
+      "フルサービスリゾルバーのTTLはAレコード120秒、委任情報180秒、NXDOMAINのネガティブキャッシュ120秒というモデル",
+      "ブラウザーはDNS応答を30秒、HTTPページを90秒保存し、ブラウザー側を消去してもリゾルバーのキャッシュは残る",
+      "移転前に新サーバーのゾーンデータを整え、旧・新サーバーの応答を揃える"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "bf5bf11f",
+    "url": "https://slack.engineering/real-time-messaging",
+    "title": "Real-time Messaging",
+    "site": "slack.engineering",
+    "author": null,
+    "published": null,
+    "read": "2026-11-28",
+    "category": "backend",
+    "kind": "article",
+    "tags": [
+      "websocket",
+      "一貫性ハッシュ"
+    ],
+    "summary": "Slackがリアルタイムにメッセージを配信する、Channel・Gateway・Admin・Presence の各サーバー（Java）の構成とクライアント接続の流れ。",
+    "points": [
+      "Channel Serverはチャンネルをconsistent hashingで割り当て、ピーク時に1ホストあたり約1600万チャンネルを扱う",
+      "CHARMsがハッシュリングを管理し、新しいCSは20秒未満で稼働する。構成はConsulで検索",
+      "クライアントはWebappから接続情報を得て、最寄りリージョンのGateway ServerへEnvoy経由でwebsocket接続する"
+    ],
+    "lang": "en",
+    "archived": null
+  },
+  {
+    "id": "87e76421",
+    "url": "https://www.graco.c.u-tokyo.ac.jp/labs/morihata/presentation_memo.htm",
+    "title": "For Better Research Talk",
+    "site": "graco.c.u-tokyo.ac.jp",
+    "author": null,
+    "published": null,
+    "read": "2026-11-28",
+    "category": "career",
+    "kind": "page",
+    "tags": [
+      "資料作成",
+      "プレゼンテーション"
+    ],
+    "summary": "研究発表を良くするための考え方とスライド設計、発表練習、質疑応答、オンライン発表までをまとめたチェックリスト形式の資料。",
+    "points": [
+      "発表者と聴衆の格差として、知識・見通し・理解・態度・動機・コンディションの6つを挙げる",
+      "聴衆は期待を下回る能力・態度だと想定して準備する",
+      "上手い発表をまねてスタイルを作る。Simon Peyton Jonesの講演の影響を受けている"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
+    "id": "11f51082",
+    "url": "https://dhbr.diamond.jp/articles/-/6316",
+    "title": "上司の上司から認められるための10のステップ もっと大きなチャンスを掴むために",
+    "site": "dhbr.diamond.jp",
+    "author": "メリッサ・ラフォーニ",
+    "published": "2019-11-27",
+    "read": "2026-11-28",
+    "category": "career",
+    "kind": "article",
+    "tags": [
+      "キャリア",
+      "マネジメント"
+    ],
+    "summary": "直属の上司の支援がなくても、上層部に潜在能力を認めてもらい大きな機会を得るための10のステップを紹介するHBR翻訳記事。",
+    "points": [
+      "エリアッセン・グループCEOのデイブ・マッキーンと、ベンコ・デンタルのチャック・コーエン取締役の知見をもとに著者が整理",
+      "「未来のスター」は肩書きに囚われず、会社と周囲の成功に貢献する人だとされる",
+      "最初のステップは、自分の成長と会社に対するコミットメントを示すこと"
+    ],
+    "lang": "ja",
+    "archived": null
+  },
+  {
     "id": "1aaa200e",
     "url": "https://konifar.hatenablog.com/entry/2015/05/23/161318",
     "title": "アウトプット増やしたらぼっちじゃなくなってきた",
